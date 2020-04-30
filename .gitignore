@@ -1,8 +1,9 @@
 application.properties
-/target/
+HELP.md
+target/
 !.mvn/wrapper/maven-wrapper.jar
-*.class
-.metadata
+!**/src/main/**
+!**/src/test/**
 
 ### STS ###
 .apt_generated
@@ -12,9 +13,21 @@ application.properties
 .settings
 .springBeans
 .sts4-cache
+.properties
 
 ### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### VS Code ###
+.vscode/
