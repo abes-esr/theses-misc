@@ -13,6 +13,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -32,6 +33,9 @@ public class BatchConfiguration {
     private final StepBuilderFactory steps;
 
     private final DataSource thesesDatasource;
+
+    @Value("${chunkSize}")
+    private Integer chunkSize;
 
     public BatchConfiguration(JobBuilderFactory jobs, StepBuilderFactory steps, DataSource thesesDatasource) {
         this.jobs = jobs;
@@ -70,7 +74,7 @@ public class BatchConfiguration {
 
     @Bean
     public Step deleteTheseEcritAcademiques(ItemReader reader, @Qualifier("tefProcessor") ItemProcessor processor, ItemWriter writer){
-        return steps.get("deleteTheseEcritAcademiques").chunk(10)
+        return steps.get("deleteTheseEcritAcademiques").chunk(chunkSize)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
@@ -79,7 +83,7 @@ public class BatchConfiguration {
 
     @Bean
     public Step deleteSubdivisionDeForme(ItemReader reader, @Qualifier("subdivisionDeFormeProcessor") ItemProcessor processor, ItemWriter writer){
-        return steps.get("deleteTheseEcritAcademiques").chunk(100)
+        return steps.get("deleteTheseEcritAcademiques").chunk(chunkSize)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
