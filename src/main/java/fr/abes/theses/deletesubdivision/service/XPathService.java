@@ -132,7 +132,6 @@ public class XPathService {
         for (Node node : nodes) {
             ((Element) node).remove(((Element) node).attribute("type"));
             node.setName("tef:elementdEntree");
-            //add node + vedetteRameauGenreForme
             e.addElement("tef:vedetteRameauGenreForme").add(node);
         }
     }

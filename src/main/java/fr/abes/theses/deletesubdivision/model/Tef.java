@@ -48,6 +48,7 @@ public class Tef {
     public boolean deleteSubdivisionDeForme() throws IOException, DocumentException {
         List<Node> nodes = XPathService.deleteAllSubdivisionForme(documentTef);
         if (!nodes.isEmpty()){
+            log.info("idDoc edited : " + documentProcess.document.getIdDoc());
             XPathService.addVedetteRameau(documentTef, nodes);
             deleteCariageReturn();
             return true;

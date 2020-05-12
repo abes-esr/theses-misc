@@ -22,7 +22,7 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
 
     @Override
     public void write(List<? extends DocumentProcess> list) throws Exception {
-        for (DocumentProcess documentProcess : list) {
+     /*   for (DocumentProcess documentProcess : list) {
             if (documentProcess.edited) {
                 log.info("idDoc edited : " + documentProcess.document.getIdDoc());
                 try {
@@ -31,6 +31,6 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
                     log.info("Error in writer, doc : " + documentProcess.document.getIdDoc());
                 }
             }
-        }
+        }*/
     }
 }
