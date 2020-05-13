@@ -14,8 +14,8 @@ public class SubdivisionDeFormeProcessor implements ItemProcessor<DocumentProces
 
         try {
             Tef documentTef = new Tef(documentProcess.document.getDoc());
-            documentProcess.edited = documentTef.deleteSubdivisionDeForme();
-            documentProcess.document.setDoc(documentTef.documentTef.asXML());
+            documentProcess.edited = documentTef.deleteSubdivisionDeForme(documentProcess.document.getIdDoc());
+            //documentProcess.document.setDoc(documentTef.documentTef.asXML());
         } catch (Exception e){
             log.info("Error in processor, doc : " + documentProcess.document.getIdDoc());
         }

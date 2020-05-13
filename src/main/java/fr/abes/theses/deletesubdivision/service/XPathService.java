@@ -81,7 +81,7 @@ public class XPathService {
         return DocumentHelper.createXPath(xPath.toString());
     }
 
-    public static List<Node> deleteAllSubdivisionForme(Document document) {
+    public static List<Node> deleteAllSubdivisionForme(Document document, int idDoc) {
 
         List<Node> nodeToReturn = new ArrayList<>();
         for (String typeBalise : typeBalises) {
@@ -91,8 +91,9 @@ public class XPathService {
             for (Node node : elems) {
                 if (((Element) node).attribute("type") != null) {
                     if ("subdivisionDeForme".equals(((Element) node).attribute("type").getValue()) && !"Thèses et écrits académiques".equals(node.getText())) {
-                        addOneTime(nodeToReturn, node);
-                        node.detach();
+                        log.info("idDoc : " + idDoc + " Balise type : " + typeBalise + " Subdivision : " + node.getText());
+                        //addOneTime(nodeToReturn, node);
+                        //node.detach();
                     }
                 } else {
                     log.error("Not found attribute \"type\"");

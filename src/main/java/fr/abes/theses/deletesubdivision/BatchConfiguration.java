@@ -83,7 +83,7 @@ public class BatchConfiguration {
 
     @Bean
     public Step deleteSubdivisionDeForme(ItemReader reader, @Qualifier("subdivisionDeFormeProcessor") ItemProcessor processor, ItemWriter writer){
-        return steps.get("deleteTheseEcritAcademiques").chunk(chunkSize)
+        return steps.get("deleteSubdivisionDeForme").chunk(chunkSize)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)

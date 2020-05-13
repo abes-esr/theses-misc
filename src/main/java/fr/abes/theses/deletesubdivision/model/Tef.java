@@ -45,12 +45,11 @@ public class Tef {
         return edited;
     }
 
-    public boolean deleteSubdivisionDeForme() throws IOException, DocumentException {
-        List<Node> nodes = XPathService.deleteAllSubdivisionForme(documentTef);
+    public boolean deleteSubdivisionDeForme(int idDoc) throws IOException, DocumentException {
+        List<Node> nodes = XPathService.deleteAllSubdivisionForme(documentTef, idDoc);
         if (!nodes.isEmpty()){
-            log.info("idDoc edited : " + documentProcess.document.getIdDoc());
-            XPathService.addVedetteRameau(documentTef, nodes);
-            deleteCariageReturn();
+//            XPathService.addVedetteRameau(documentTef, nodes);
+//            deleteCariageReturn();
             return true;
         } else {
             return false;
