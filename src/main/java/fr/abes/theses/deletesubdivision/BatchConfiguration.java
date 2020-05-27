@@ -67,7 +67,7 @@ public class BatchConfiguration {
         log.info("Début du job de suppression des Subdivision De Forme");
 
         return jobs
-                .get("deleteSubdivisionDeForme").incrementer(incrementer())
+                .get("deplacerSubdivDeFormeEnGenreForme").incrementer(incrementer())
                 .start(deleteSubdivisionDeForme(reader, processor,writer))
                 .build();
     }
