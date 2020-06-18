@@ -26,7 +26,7 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
             if (documentProcess.edited) {
                 log.info("idDoc edited : " + documentProcess.document.getIdDoc());
                 try {
-                    service.getDao().getDocument().save(documentProcess.document);
+                    //service.getDao().getDocument().save(documentProcess.document);
                 } catch (Exception e) {
                     log.info("Error in writer, doc : " + documentProcess.document.getIdDoc());
                 }
