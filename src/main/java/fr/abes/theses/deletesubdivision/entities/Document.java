@@ -33,7 +33,7 @@ public class Document implements Serializable, GenericEntity<Integer> {
 /*    @Column(name = "ENVOISOLR")
     private Integer envoiSolr;*/
 
-    public Document(Integer idDoc, String doc, String texte, String codeEtab, Integer envoiSolr) {
+    public Document(Integer idDoc, String doc, /*String texte,*/ String codeEtab/*, Integer envoiSolr*/) {
         this.idDoc = idDoc;
         this.doc = doc;
         //this.texte = texte;

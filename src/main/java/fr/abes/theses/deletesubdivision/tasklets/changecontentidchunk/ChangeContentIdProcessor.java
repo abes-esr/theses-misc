@@ -10,13 +10,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class ChangeContentIdProcessor implements ItemProcessor<DocumentProcess, DocumentProcess> {
     @Override
-    public DocumentProcess process(DocumentProcess documentProcess) throws Exception {
-        try {
-            Tef documentTef = new Tef(documentProcess.document.getDoc());
-            documentProcess.edited = documentTef.deleteSubdivisionDeForme();
-            documentProcess.document.setDoc(documentTef.documentTef.asXML());
-        } catch (Exception e){
-            log.info("Error in processor, doc : " + documentProcess.document.getIdDoc());
+    public DocumentProcess process(DocumentProcess documentProcess) {
+
+        if (documentProcess.document != null) {
+            try {
+                Tef documentTef = new Tef(documentProcess.document.getDoc());
+                documentProcess.edited = documentTef.changeContentId(documentProcess.idStepToChange);
+                documentProcess.document.setDoc(documentTef.documentTef.asXML());
+            } catch (Exception e) {
+                log.info("Error in processor, doc : " + documentProcess.document.getIdDoc());
+            }
+        } else {
+            log.info("Doc " + documentProcess.idStepToChange.Idstep + " not found");
         }
 
         return documentProcess;
