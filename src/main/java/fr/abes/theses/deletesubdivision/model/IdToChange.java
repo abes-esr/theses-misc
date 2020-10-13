@@ -1,7 +1,7 @@
 package fr.abes.theses.deletesubdivision.model;
 
-public class IdStepToChange {
-    public String Idstep;
+public class IdToChange {
+    public String Id;
     public String oldCodeInd;
     public String etab;
     public String codeInd;

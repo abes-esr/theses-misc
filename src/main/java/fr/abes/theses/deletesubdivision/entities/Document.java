@@ -24,21 +24,21 @@ public class Document implements Serializable, GenericEntity<Integer> {
     @Column(name = "DOC", columnDefinition = "XMLType")
     private String doc;
 
-/*    @Column(name = "TEXTE")
-    private String texte;*/
+    @Column(name = "TEXTE")
+    private String texte;
 
     @Column(name = "CODEETAB")
     private String codeEtab;
 
-/*    @Column(name = "ENVOISOLR")
-    private Integer envoiSolr;*/
+    @Column(name = "ENVOISOLR")
+    private Integer envoiSolr;
 
-    public Document(Integer idDoc, String doc, /*String texte,*/ String codeEtab/*, Integer envoiSolr*/) {
+    public Document(Integer idDoc, String doc, String texte, String codeEtab, Integer envoiSolr) {
         this.idDoc = idDoc;
         this.doc = doc;
-        //this.texte = texte;
+        this.texte = texte;
         this.codeEtab = codeEtab;
-        //this.envoiSolr = envoiSolr;
+        this.envoiSolr = envoiSolr;
     }
 
 

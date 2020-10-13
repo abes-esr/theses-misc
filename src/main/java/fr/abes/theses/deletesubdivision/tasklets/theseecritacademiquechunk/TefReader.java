@@ -1,8 +1,9 @@
 package fr.abes.theses.deletesubdivision.tasklets.theseecritacademiquechunk;
 
+import fr.abes.theses.deletesubdivision.entities.Compte;
 import fr.abes.theses.deletesubdivision.entities.Document;
 import fr.abes.theses.deletesubdivision.model.DocumentProcess;
-import fr.abes.theses.deletesubdivision.model.IdStepToChange;
+import fr.abes.theses.deletesubdivision.model.IdToChange;
 import fr.abes.theses.deletesubdivision.service.impl.DocumentService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,17 +17,12 @@ import org.springframework.batch.core.annotation.BeforeChunk;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -52,7 +48,7 @@ public class TefReader implements ItemReader<DocumentProcess>, StepExecutionList
     @Value("#{'${thesesToTreat}'.split(',')}")
     private List<Integer> ids;
 
-    private List<IdStepToChange> idStepToChanges = new ArrayList<>();
+    private List<IdToChange> idToChanges = new ArrayList<>();
 
 
     private AtomicInteger iIds = new AtomicInteger();
@@ -66,14 +62,14 @@ public class TefReader implements ItemReader<DocumentProcess>, StepExecutionList
         Iterable<CSVRecord> records = fmt.parse(in);
 
         for (CSVRecord record : records) {
-            IdStepToChange idStepToChange = new IdStepToChange();
+            IdToChange idToChange = new IdToChange();
 
-            idStepToChange.Idstep = record.get("Idstep");
-            idStepToChange.oldCodeInd = record.get("OLD_COD_IND");
-            idStepToChange.etab = record.get("ETAB");
-            idStepToChange.codeInd = record.get("COD_IND");
+            idToChange.Id = record.get("Id");
+            idToChange.oldCodeInd = record.get("OLD_COD_IND");
+            idToChange.etab = record.get("ETAB");
+            idToChange.codeInd = record.get("COD_IND");
 
-            idStepToChanges.add(idStepToChange);
+            idToChanges.add(idToChange);
         }
     }
 
@@ -81,11 +77,20 @@ public class TefReader implements ItemReader<DocumentProcess>, StepExecutionList
     @Override
     public DocumentProcess read() {
 
-        if (iIds.get() < idStepToChanges.size()) {
-            IdStepToChange idStepToChange = idStepToChanges.get(iIds.getAndIncrement());
+        if (iIds.get() < idToChanges.size()) {
+
+            IdToChange idToChange = idToChanges.get(iIds.getAndIncrement());
+            Compte compte = null;
+            try {
+                compte = service.getDao().getCompte().getCompteByIdDoc(Integer.valueOf(idToChange.Id));
+            } catch (Exception e) {
+                log.error("Unable to get Compte objet from table, IdDoc : " + idToChange.Id);
+                return new DocumentProcess(null, idToChange, null);
+            }
             return new DocumentProcess(
-                    service.getDao().getDocument().findById(Integer.parseInt(idStepToChange.Idstep)).orElse(null),
-                    idStepToChange
+                    service.getDao().getDocument().findById(Integer.parseInt(idToChange.Id)).orElse(null),
+                    idToChange,
+                    compte
             );
         } else {
             return null;

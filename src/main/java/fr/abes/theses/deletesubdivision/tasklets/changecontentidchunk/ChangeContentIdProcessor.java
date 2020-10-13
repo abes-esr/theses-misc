@@ -12,16 +12,30 @@ public class ChangeContentIdProcessor implements ItemProcessor<DocumentProcess, 
     @Override
     public DocumentProcess process(DocumentProcess documentProcess) {
 
-        if (documentProcess.document != null) {
+        if (documentProcess.document != null && documentProcess.compte != null) {
             try {
-                Tef documentTef = new Tef(documentProcess.document.getDoc());
-                documentProcess.edited = documentTef.changeContentId(documentProcess.idStepToChange);
-                documentProcess.document.setDoc(documentTef.documentTef.asXML());
+                if (documentProcess.idToChange.codeInd != null) {
+
+                    String idSource = documentProcess.idToChange.etab + "_0755976N_" + documentProcess.idToChange.codeInd;
+
+                    Tef documentTef = new Tef(documentProcess.document.getDoc());
+                    documentProcess.edited = documentTef.changeContentId(idSource);
+                    documentProcess.document.setDoc(documentTef.documentTef.asXML());
+
+                    if (documentProcess.compte.getLogin() != null) {
+                        documentProcess.compte.setLogin(idSource);
+                        documentProcess.compte.setMdp(idSource);
+                        documentProcess.compte.setNUMIDENT("0755976N_" + documentProcess.idToChange.codeInd);
+                    }
+                } else {
+                    log.error("Error in processor, doc : " + documentProcess.document.getIdDoc() + "new codeInd not found");
+                }
+
             } catch (Exception e) {
-                log.info("Error in processor, doc : " + documentProcess.document.getIdDoc());
+                log.error("Error in processor, doc : " + documentProcess.document.getIdDoc());
             }
         } else {
-            log.info("Doc " + documentProcess.idStepToChange.Idstep + " not found");
+            log.error("Doc or Compte " + documentProcess.idToChange.Id + " not found");
         }
 
         return documentProcess;
