@@ -64,4 +64,9 @@ public class Tef {
 
         documentTef = DocumentHelper.parseText(sw.toString());
     }
+
+    public boolean changeContentId(String idSource) {
+        XPathService.changeContentId(idSource, documentTef);
+        return true;
+    }
 }

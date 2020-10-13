@@ -3,7 +3,6 @@ package fr.abes.theses.deletesubdivision.service;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +15,9 @@ public class XPathService {
 
     public static final String SUBDIVISION_RAMEAU = "/mets:mets/mets:dmdSec[2]/mets:mdWrap/mets:xmlData/tef:thesisRecord/tef:sujetRameau/tef:vedetteRameauNomCommun/tef:subdivision";
     public static final String SUJET_RAMEAU = "/mets:mets/mets:dmdSec[2]/mets:mdWrap/mets:xmlData/tef:thesisRecord/tef:sujetRameau";
+
+    public static final String ID_SOURCE_STEP = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/step_gestion/traitements/entree";
+    public static final String ID_SOURCE_STAR = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements/entree";
 
     public static final List<String> typeBalises = new ArrayList<>(
             Arrays.asList("tef:vedetteRameauPersonne",
@@ -135,5 +137,9 @@ public class XPathService {
             //add node + vedetteRameauGenreForme
             e.addElement("tef:vedetteRameauGenreForme").add(node);
         }
+    }
+
+    public static void changeContentId(String idSource, Document documentTef) {
+        XPathService.setAttribut(ID_SOURCE_STAR, "idSource", idSource, documentTef);
     }
 }

@@ -73,6 +73,22 @@ public class BatchConfiguration {
     }
 
     @Bean
+    public Job changeContentIdJob(ItemReader reader, @Qualifier("changeContentIdProcessor") ItemProcessor processor, ItemWriter writer){
+        return jobs
+                .get("changeContentId").incrementer(incrementer())
+                .start(changeContentId(reader, processor,writer))
+                .build();
+    }
+
+    private Step changeContentId(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
+        return steps.get("changeContentId").chunk(chunkSize)
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
+                .build();
+    }
+
+    @Bean
     public Step deleteTheseEcritAcademiques(ItemReader reader, @Qualifier("tefProcessor") ItemProcessor processor, ItemWriter writer){
         return steps.get("deleteTheseEcritAcademiques").chunk(chunkSize)
                 .reader(reader)

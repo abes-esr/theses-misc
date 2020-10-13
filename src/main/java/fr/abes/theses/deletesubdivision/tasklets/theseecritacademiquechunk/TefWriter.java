@@ -24,11 +24,22 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
     public void write(List<? extends DocumentProcess> list) throws Exception {
         for (DocumentProcess documentProcess : list) {
             if (documentProcess.edited) {
-                log.info("idDoc edited : " + documentProcess.document.getIdDoc());
                 try {
                     service.getDao().getDocument().save(documentProcess.document);
+                    log.info("idDoc edited : " + documentProcess.document.getIdDoc());
                 } catch (Exception e) {
-                    log.info("Error in writer, doc : " + documentProcess.document.getIdDoc());
+                    log.error("Error in writer, doc : " + documentProcess.document.getIdDoc());
+                }
+
+                if (documentProcess.compte != null) {
+                    try {
+                        service.getDao().getCompte().save(documentProcess.compte);
+                        log.info("Compte edited IdDoc : " + documentProcess.document.getIdDoc());
+                    } catch (Exception e) {
+                        log.error("Error in writer, Compte IdDoc : " + documentProcess.document.getIdDoc());
+                    }
+                } else {
+                    log.error("Compte not edited IdDoc : " + documentProcess.document.getIdDoc());
                 }
             }
         }
