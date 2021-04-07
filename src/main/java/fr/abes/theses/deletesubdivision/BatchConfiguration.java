@@ -80,6 +80,23 @@ public class BatchConfiguration {
                 .build();
     }
 
+
+    @Bean
+    public Job changeUrlJob(ItemReader reader, @Qualifier("changeURLProcessor") ItemProcessor processor, ItemWriter writer) {
+        return jobs
+                .get("changeUrl1").incrementer(incrementer())
+                .start(changeURLStep(reader, processor, writer))
+                .build();
+    }
+
+    public Step changeURLStep(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
+        return steps.get("changeUrl").chunk(chunkSize)
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
+                .build();
+    }
+
     private Step changeContentId(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
         return steps.get("changeContentId").chunk(chunkSize)
                 .reader(reader)

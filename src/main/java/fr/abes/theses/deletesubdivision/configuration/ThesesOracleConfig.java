@@ -19,7 +19,8 @@ import java.util.HashMap;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages ={"fr.abes.theses.deletesubdivision.service","fr.abes.theses.deletesubdivision.entities"})
-@EnableJpaRepositories(transactionManagerRef = "thesesTransactionManager", entityManagerFactoryRef = "thesesEntityManagerFactory",basePackages = "fr.abes.theses.deletesubdivision.dao")
+@EnableJpaRepositories(transactionManagerRef = "thesesTransactionManager",
+        entityManagerFactoryRef = "thesesEntityManagerFactory",basePackages = "fr.abes.theses.deletesubdivision.dao")
 public class ThesesOracleConfig {
     @Value("${spring.datasource.url}")
     private String url;

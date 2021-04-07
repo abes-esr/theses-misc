@@ -10,13 +10,20 @@ public class DocumentProcess {
 
     public Compte compte;
 
-    public DocumentProcess(Document document){
+    public UrlToChange urlToChange;
+
+    public DocumentProcess(Document document) {
         this.document = document;
     }
 
-    public DocumentProcess(Document document, IdToChange idToChange, Compte compte){
+    public DocumentProcess(Document document, IdToChange idToChange, Compte compte) {
         this.document = document;
         this.idToChange = idToChange;
         this.compte = compte;
+    }
+
+    public DocumentProcess(Document document, UrlToChange urlToChange) {
+        this.document = document;
+        this.urlToChange = urlToChange;
     }
 }

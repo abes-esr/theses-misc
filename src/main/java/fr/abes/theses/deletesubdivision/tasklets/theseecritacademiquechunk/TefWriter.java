@@ -25,13 +25,13 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
         for (DocumentProcess documentProcess : list) {
             if (documentProcess.edited) {
                 try {
-                    service.getDao().getDocument().save(documentProcess.document);
+                    //service.getDao().getDocument().save(documentProcess.document);
                     log.info("idDoc edited : " + documentProcess.document.getIdDoc());
                 } catch (Exception e) {
                     log.error("Error in writer, doc : " + documentProcess.document.getIdDoc());
                 }
 
-                if (documentProcess.compte != null) {
+               /* if (documentProcess.compte != null) {
                     try {
                         service.getDao().getCompte().save(documentProcess.compte);
                         log.info("Compte edited IdDoc : " + documentProcess.document.getIdDoc());
@@ -40,7 +40,7 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
                     }
                 } else {
                     log.error("Compte not edited IdDoc : " + documentProcess.document.getIdDoc());
-                }
+                }*/
             }
         }
     }
