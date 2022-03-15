@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>fr.abes.theses</groupId>
-	<artifactId>deletesubdivision</artifactId>
+	<artifactId>thesesmisc</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>deletesubdivision</name>
+	<name>theses-misc</name>
 	<description>Delete subdivision Thèses et écrits académiques</description>
 
 	<properties>
