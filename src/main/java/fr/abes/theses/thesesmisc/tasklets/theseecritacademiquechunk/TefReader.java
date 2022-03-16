@@ -85,7 +85,7 @@ public class TefReader implements ItemReader<DocumentProcess>, StepExecutionList
                 compte = service.getDao().getCompte().getCompteByIdDoc(Integer.valueOf(idToChange.Id));
             } catch (Exception e) {
                 log.error("Unable to get Compte objet from table, IdDoc : " + idToChange.Id);
-                return new DocumentProcess(null, idToChange, null);
+                return new DocumentProcess(null, idToChange, compte);
             }
             return new DocumentProcess(
                     service.getDao().getDocument().findById(Integer.parseInt(idToChange.Id)).orElse(null),

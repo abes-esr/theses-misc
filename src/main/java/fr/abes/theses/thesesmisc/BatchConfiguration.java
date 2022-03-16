@@ -53,7 +53,17 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Job deleteSubdivision(ItemReader reader, @Qualifier("tefProcessor") ItemProcessor processor, ItemWriter writer) {
+    public Job changeUrlStar(@Qualifier("changeUrlReader") ItemReader reader, @Qualifier("changeUrlProcessor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer) {
+        log.info("Début du job de changement des url");
+
+        return jobs
+                .get("changeUrlStar").incrementer(incrementer())
+                .start(ajoutUrl(reader, processor, writer))
+                .build();
+    }
+
+    @Bean
+    public Job deleteSubdivision(@Qualifier("tefReader") ItemReader reader, @Qualifier("tefProcessor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer) {
         log.info("Début du job de suppression des these et écrits académiques");
 
         return jobs
@@ -63,7 +73,7 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Job deleteSubdivisionDeFormeJob (ItemReader reader, @Qualifier("subdivisionDeFormeProcessor") ItemProcessor processor, ItemWriter writer){
+    public Job deleteSubdivisionDeFormeJob (@Qualifier("tefReader") ItemReader reader, @Qualifier("subdivisionDeFormeProcessor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer){
         log.info("Début du job de suppression des Subdivision De Forme");
 
         return jobs
@@ -73,10 +83,18 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Job changeContentIdJob(ItemReader reader, @Qualifier("changeContentIdProcessor") ItemProcessor processor, ItemWriter writer){
+    public Job changeContentIdJob(@Qualifier("tefReader") ItemReader reader, @Qualifier("changeContentIdProcessor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer){
         return jobs
                 .get("changeContentId").incrementer(incrementer())
                 .start(changeContentId(reader, processor,writer))
+                .build();
+    }
+
+    private Step ajoutUrl(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
+        return steps.get("ajoutUrl").chunk(chunkSize)
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
                 .build();
     }
 
@@ -89,7 +107,7 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step deleteTheseEcritAcademiques(ItemReader reader, @Qualifier("tefProcessor") ItemProcessor processor, ItemWriter writer){
+    public Step deleteTheseEcritAcademiques(@Qualifier("tefReader") ItemReader reader, @Qualifier("tefProcessor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer){
         return steps.get("deleteTheseEcritAcademiques").chunk(chunkSize)
                 .reader(reader)
                 .processor(processor)
@@ -98,7 +116,7 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step deleteSubdivisionDeForme(ItemReader reader, @Qualifier("subdivisionDeFormeProcessor") ItemProcessor processor, ItemWriter writer){
+    public Step deleteSubdivisionDeForme(@Qualifier("tefReader") ItemReader reader, @Qualifier("subdivisionDeFormeProcessor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer){
         return steps.get("deleteTheseEcritAcademiques").chunk(chunkSize)
                 .reader(reader)
                 .processor(processor)

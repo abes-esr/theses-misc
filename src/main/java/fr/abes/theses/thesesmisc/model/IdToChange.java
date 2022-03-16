@@ -5,4 +5,5 @@ public class IdToChange {
     public String oldCodeInd;
     public String etab;
     public String codeInd;
+    public String url;
 }

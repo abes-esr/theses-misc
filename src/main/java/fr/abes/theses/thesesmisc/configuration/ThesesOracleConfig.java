@@ -41,7 +41,7 @@ public class ThesesOracleConfig {
     public LocalContainerEntityManagerFactoryBean thesesEntityManagerFactory() {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(thesesDatasource());
-        em.setPackagesToScan("fr.abes.theses.deletesubdivision.entities");
+        em.setPackagesToScan("fr.abes.theses.thesesmisc.entities");
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         HashMap<String, Object> properties = new HashMap<>();

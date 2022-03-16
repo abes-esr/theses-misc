@@ -8,6 +8,8 @@ public class DocumentProcess {
     public boolean edited = false;
     public IdToChange idToChange;
 
+    public String url;
+
     public Compte compte;
 
     public DocumentProcess(Document document){
@@ -18,5 +20,11 @@ public class DocumentProcess {
         this.document = document;
         this.idToChange = idToChange;
         this.compte = compte;
+    }
+
+    public DocumentProcess(Document document, IdToChange idToChange, String url){
+        this.document = document;
+        this.idToChange = idToChange;
+        this.url = url;
     }
 }

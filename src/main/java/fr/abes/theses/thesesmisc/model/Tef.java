@@ -57,6 +57,27 @@ public class Tef {
 
     }
 
+    public boolean changeUrl(String url) throws DocumentException, IOException, InstantiationException {
+        checkDocumenTef();
+        boolean edited = XPathService.setUrlEtabDiffuseur(documentTef, url);
+
+        if (edited){
+            deleteCariageReturn();
+        }
+        return edited;
+    }
+
+    public boolean changeUrlCas1(String url) throws DocumentException, IOException, InstantiationException {
+        checkDocumenTef();
+        boolean edited = XPathService.setUrlEtabDiffuseurCas1(documentTef, url);
+
+        if (edited){
+            deleteCariageReturn();
+        }
+        return edited;
+
+    }
+
     private void deleteCariageReturn() throws IOException, DocumentException {
         StringWriter sw = new StringWriter();
         XMLWriter writer = new XMLWriter(sw, OutputFormat.createPrettyPrint( ));

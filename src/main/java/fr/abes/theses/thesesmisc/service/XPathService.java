@@ -2,6 +2,7 @@ package fr.abes.theses.thesesmisc.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.*;
+import org.dom4j.tree.BaseElement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +19,11 @@ public class XPathService {
 
     public static final String ID_SOURCE_STEP = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/step_gestion/traitements/entree";
     public static final String ID_SOURCE_STAR = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements/entree";
+
+    public static final String ETAB_DIFFUSEUR = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements/sorties/diffusion/etabDiffuseur";
+
+    public static final String TEF_EDITION = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/tef:edition";
+
 
     public static final List<String> typeBalises = new ArrayList<>(
             Arrays.asList("tef:vedetteRameauPersonne",
@@ -44,16 +50,60 @@ public class XPathService {
         }
     }
 
-    public static String getAttribut(String xpath, String attribut, Document document) {
+    public static void setValue(String xpath, String value, Document document) {
+        try {
+            XPath path = DocumentHelper.createXPath(xpath);
+            List<Node> nodes = path.selectNodes(document);
+            Element elem = (Element) nodes.get(0);
+            elem.setText(value);
+
+        } catch (Exception e) {
+            log.error("Erreur générique dans setValue pour le xpath : " + xpath
+                    + " et valeur : " + value, e);
+            throw e;
+        }
+    }
+
+    public static String getAttribut(String xpath, String attribute, Document document) {
         XPath path = DocumentHelper.createXPath(xpath);
         Element elem = (Element) path.selectNodes(document).get(0);
-        return elem.attribute(attribut).getValue();
+        return elem.attribute(attribute).getValue();
     }
 
     public static String getValue(String xpath, Document document) {
         XPath path = DocumentHelper.createXPath(xpath);
         Element elem = (Element) path.selectNodes(document).get(0);
         return elem.getText();
+    }
+
+    public static boolean setUrlEtabDiffuseur(Document document, String url) {
+        setAttribut(ETAB_DIFFUSEUR, "etabDiffuseurPolEtablissement", "oui", document);
+        setValue(ETAB_DIFFUSEUR + "/urlEtabDiffuseur", url, document);
+
+        BaseElement node = new BaseElement("dc:identifier");
+        node.addAttribute("xsi:type", "dcterms:URI");
+        node.setText(url);
+        addElement(TEF_EDITION, node, document);
+
+        return true;
+    }
+
+    public static boolean setUrlEtabDiffuseurCas1(Document document, String url) {
+
+        BaseElement node = new BaseElement("dc:identifier");
+        node.addAttribute("xsi:type", "tef:URI_intranetEmbargo");
+        node.setText(url);
+
+        addElement(TEF_EDITION, node, document);
+
+        return true;
+    }
+
+    public static void addElement(String xpath, Node node, Document document) {
+        XPath path = DocumentHelper.createXPath(xpath);
+        List<Node> nodes = path.selectNodes(document);
+        Element elem = (Element) nodes.get(0);
+        elem.add(node);
     }
 
     public static boolean deleteThesEcritAcademique(Document document) {
