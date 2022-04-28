@@ -76,7 +76,7 @@ public class XPathService {
         return elem.getText();
     }
 
-    public static boolean setUrlEtabDiffuseur(Document document, String url) {
+    public static boolean setUrlEtabDiffuseurCas5(Document document, String url) {
         setAttribut(ETAB_DIFFUSEUR, "etabDiffuseurPolEtablissement", "oui", document);
         setValue(ETAB_DIFFUSEUR + "/urlEtabDiffuseur", url, document);
 

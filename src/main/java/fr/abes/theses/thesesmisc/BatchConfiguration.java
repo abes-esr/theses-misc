@@ -53,11 +53,23 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Job changeUrlStar(@Qualifier("changeUrlReader") ItemReader reader, @Qualifier("changeUrlProcessor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer) {
+    public Job changeUrlStar(@Qualifier("changeUrlCas5Reader") ItemReader reader, @Qualifier("changeUrlCas5Processor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer) {
         log.info("Début du job de changement des url");
 
         return jobs
-                .get("changeUrlStar").incrementer(incrementer())
+                .get("changeUrlStarCas5").incrementer(incrementer())
+                .start(ajoutUrl(reader, processor, writer))
+                .build();
+    }
+
+    @Bean
+    public Job changeUrlStarCas1(@Qualifier("changeUrlReaderCas1") ItemReader reader,
+                                 @Qualifier("changeUrlCas1Processor") ItemProcessor processor,
+                                 @Qualifier("tefWriter") ItemWriter writer) {
+        log.info("Début du job de changement des url");
+
+        return jobs
+                .get("changeUrlStarCas1").incrementer(incrementer())
                 .start(ajoutUrl(reader, processor, writer))
                 .build();
     }

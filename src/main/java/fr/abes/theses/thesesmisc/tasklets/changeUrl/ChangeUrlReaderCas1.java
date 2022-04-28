@@ -1,6 +1,5 @@
 package fr.abes.theses.thesesmisc.tasklets.changeUrl;
 
-import fr.abes.theses.thesesmisc.entities.Compte;
 import fr.abes.theses.thesesmisc.model.DocumentProcess;
 import fr.abes.theses.thesesmisc.model.IdToChange;
 import fr.abes.theses.thesesmisc.service.impl.DocumentService;
@@ -12,9 +11,6 @@ import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.NonTransientResourceException;
-import org.springframework.batch.item.ParseException;
-import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.stereotype.Component;
 
 import java.io.FileReader;
@@ -26,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
-public class ChangeUrlReader implements ItemReader<DocumentProcess>, StepExecutionListener {
+public class ChangeUrlReaderCas1 implements ItemReader<DocumentProcess>, StepExecutionListener {
 
     @Getter
     private final DocumentService service;
@@ -35,10 +31,10 @@ public class ChangeUrlReader implements ItemReader<DocumentProcess>, StepExecuti
 
     private AtomicInteger iIds = new AtomicInteger();
 
-    public ChangeUrlReader(DocumentService service) throws IOException {
+    public ChangeUrlReaderCas1(DocumentService service) throws IOException {
         this.service = service;
 
-        Reader in = new FileReader("src/main/resources/CAS5ajout.csv");
+        Reader in = new FileReader("src/main/resources/CAS1ajout.csv");
         CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(',').withFirstRecordAsHeader();
         Iterable<CSVRecord> records = fmt.parse(in);
 

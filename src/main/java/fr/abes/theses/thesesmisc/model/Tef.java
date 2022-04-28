@@ -57,9 +57,9 @@ public class Tef {
 
     }
 
-    public boolean changeUrl(String url) throws DocumentException, IOException, InstantiationException {
+    public boolean changeUrlCas5(String url) throws DocumentException, IOException, InstantiationException {
         checkDocumenTef();
-        boolean edited = XPathService.setUrlEtabDiffuseur(documentTef, url);
+        boolean edited = XPathService.setUrlEtabDiffuseurCas5(documentTef, url);
 
         if (edited){
             deleteCariageReturn();

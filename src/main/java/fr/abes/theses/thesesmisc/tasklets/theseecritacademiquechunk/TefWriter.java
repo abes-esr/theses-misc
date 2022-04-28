@@ -31,7 +31,7 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
                     log.error("Error in writer, doc : " + documentProcess.document.getIdDoc());
                 }
 
-                if (documentProcess.compte != null) {
+               /* if (documentProcess.compte != null) {
                     try {
                         service.getDao().getCompte().save(documentProcess.compte);
                         log.info("Compte edited IdDoc : " + documentProcess.document.getIdDoc());
@@ -40,7 +40,7 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
                     }
                 } else {
                     log.error("Compte not edited IdDoc : " + documentProcess.document.getIdDoc());
-                }
+                }*/
             }
         }
     }

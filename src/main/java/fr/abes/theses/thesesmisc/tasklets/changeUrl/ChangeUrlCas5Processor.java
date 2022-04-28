@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class ChangeUrlProcessor implements ItemProcessor<DocumentProcess, DocumentProcess> {
+public class ChangeUrlCas5Processor implements ItemProcessor<DocumentProcess, DocumentProcess> {
     @Override
     public DocumentProcess process(DocumentProcess documentProcess) throws Exception {
         try {
             Tef documentTef = new Tef(documentProcess.document.getDoc());
-            documentProcess.edited = documentTef.changeUrl(documentProcess.url);
+            documentProcess.edited = documentTef.changeUrlCas5(documentProcess.url);
             documentProcess.document.setDoc(documentTef.documentTef.asXML());
         } catch (Exception e){
             log.info("Error in processor, doc : " + documentProcess.document.getIdDoc());
