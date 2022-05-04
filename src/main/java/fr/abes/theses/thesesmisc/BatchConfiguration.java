@@ -102,6 +102,22 @@ public class BatchConfiguration {
                 .build();
     }
 
+    @Bean
+    public Job deleteSolrIndexJob(@Qualifier("deleteDoublonSolrReader") ItemReader reader, @Qualifier("deleteDoublonSolrProcessor") ItemProcessor processor, @Qualifier("deleteDoublonSolrWriter") ItemWriter writer) {
+        return jobs
+                .get("deleteSolrIndex").incrementer(incrementer())
+                .start(deleteSolrIndex(reader, processor,writer))
+                .build();
+    }
+
+    private Step deleteSolrIndex(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
+        return steps.get("deleteSolrIndex").chunk(chunkSize)
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
+                .build();
+    }
+
     private Step ajoutUrl(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
         return steps.get("ajoutUrl").chunk(chunkSize)
                 .reader(reader)
