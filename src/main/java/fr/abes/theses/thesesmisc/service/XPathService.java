@@ -24,7 +24,6 @@ public class XPathService {
 
     public static final String TEF_EDITION = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/tef:edition";
 
-
     public static final List<String> typeBalises = new ArrayList<>(
             Arrays.asList("tef:vedetteRameauPersonne",
                     "tef:vedetteRameauCollectivite",
@@ -191,5 +190,23 @@ public class XPathService {
 
     public static void changeContentId(String idSource, Document documentTef) {
         XPathService.setAttribut(ID_SOURCE_STAR, "idSource", idSource, documentTef);
+    }
+
+    public static boolean deleteHistEtCritique(Document documentTef) {
+        boolean edited = false;
+
+        for (String typeBalise : typeBalises) {
+            XPath path = buildXPath(typeBalise);
+
+            List<Node> elem = path.selectNodes(documentTef);
+            for (Node node : elem) {
+                if ("Histoire et critique".equals(node.getText())) {
+                    node.detach();
+                    edited = true;
+                }
+            }
+        }
+
+        return edited;
     }
 }

@@ -12,6 +12,11 @@ public class DocumentProcess {
 
     public Compte compte;
 
+    public DocumentProcess(Document document, IdToChange idToChange) {
+        this.document = document;
+        this.idToChange = idToChange;
+    }
+
     public DocumentProcess(Document document){
         this.document = document;
     }

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersIncrementer;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.annotation.BeforeRead;
 import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -107,6 +108,22 @@ public class BatchConfiguration {
         return jobs
                 .get("deleteSolrIndex").incrementer(incrementer())
                 .start(deleteSolrIndex(reader, processor,writer))
+                .build();
+    }
+
+    @Bean
+    public Job deleteHistEtCritiqueJob(@Qualifier("histoireEtCritiqueReader") ItemReader reader, @Qualifier("histoireEtCritiqueProcessor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer) {
+        return jobs
+                .get("deleteHistEtCritique").incrementer(incrementer())
+                .start(deleteSolrIndex(reader, processor,writer))
+                .build();
+    }
+
+    private Step deleteHistEtCritique(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
+        return steps.get("deleteHistEtCritique").chunk(chunkSize)
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
                 .build();
     }
 

@@ -45,6 +45,16 @@ public class Tef {
         return edited;
     }
 
+    public boolean deleteHistEtCritique() throws DocumentException, IOException, InstantiationException {
+        checkDocumenTef();
+        boolean edited = XPathService.deleteHistEtCritique(documentTef);
+
+        if (edited){
+            deleteCariageReturn();
+        }
+        return edited;
+    }
+
     public boolean deleteSubdivisionDeForme() throws IOException, DocumentException {
         List<Node> nodes = XPathService.deleteAllSubdivisionForme(documentTef);
         if (!nodes.isEmpty()){
