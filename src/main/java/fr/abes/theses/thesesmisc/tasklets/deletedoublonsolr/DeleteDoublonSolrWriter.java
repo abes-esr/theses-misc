@@ -42,11 +42,25 @@ public class DeleteDoublonSolrWriter implements ItemWriter<String> {
         }
         StringWriter sw = new StringWriter();
         postData(new StringReader("<commit/>"), sw, urlSolrUpdate);
+
+        for (String id : list) {
+            try {
+                if (service.getDao().getDocument().findById(Integer.valueOf(id)).isPresent()) {
+                    service.getDao().getDocument().deleteById(Integer.valueOf(id));
+                    log.info("Delete bdd: " + id);
+                } else {
+                    log.info("No doc in bdd : " + id);
+                }
+            } catch (Exception e) {
+                log.warn("Erreur lors de la suppression de l'id : " + id + " dans la bdd");
+            }
+        }
     }
 
     /**
      * Reads data from the data reader and posts it to solr,
      * writes to the response to output
+     *
      * @throws Exception
      */
     public void postData(Reader data, Writer output, String url) throws IOException {
