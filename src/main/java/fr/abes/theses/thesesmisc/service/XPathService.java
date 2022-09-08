@@ -20,6 +20,7 @@ public class XPathService {
     public static final String ID_SOURCE_STEP = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/step_gestion/traitements/entree";
     public static final String ID_SOURCE_STAR = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements/entree";
 
+
     public static final String ETAB_DIFFUSEUR = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements/sorties/diffusion/etabDiffuseur";
 
     public static final String TEF_EDITION = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/tef:edition";
@@ -208,5 +209,16 @@ public class XPathService {
         }
 
         return edited;
+    }
+
+    public static boolean deleteWhiteSpaceIdSourceStep(Document documentTef) {
+        String idSource = XPathService.getAttribut(ID_SOURCE_STEP, "idSource", documentTef).replace(" ", "");
+        XPathService.setAttribut(ID_SOURCE_STEP, "idSource", idSource, documentTef);
+        return true;
+    }
+    public static boolean deleteWhiteSpaceIdSourceStar(Document documentTef) {
+        String idSource = XPathService.getAttribut(ID_SOURCE_STAR, "idSource", documentTef).replace(" ", "");
+        XPathService.setAttribut(ID_SOURCE_STAR, "idSource", idSource, documentTef);
+        return true;
     }
 }

@@ -118,7 +118,24 @@ public class BatchConfiguration {
                 .start(deleteSolrIndex(reader, processor,writer))
                 .build();
     }
+    @Bean
+    public Job deleteWhiteSpaceIdSourceStepJob(@Qualifier("deleteWhiteSpacesBddReader") ItemReader reader,
+                                               @Qualifier("deleteWhiteSpacesBddProcessor") ItemProcessor processor,
+                                               @Qualifier("tefWriter") ItemWriter writer) {
+        return jobs
+                .get("deleteWhiteSpaceIdSourceStep").incrementer(incrementer())
+                .start(deleteSolrIndex(reader, processor,writer))
+                .build();
+    }
 
+
+    private Step deleteWhiteSpaceIdSourceStepStep(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
+        return steps.get("deleteWhiteSpaceIdSourceStep").chunk(chunkSize)
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
+                .build();
+    }
     private Step deleteHistEtCritique(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
         return steps.get("deleteHistEtCritique").chunk(chunkSize)
                 .reader(reader)

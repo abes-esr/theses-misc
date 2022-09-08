@@ -1,6 +1,7 @@
 package fr.abes.theses.thesesmisc.model;
 
 import fr.abes.theses.thesesmisc.entities.Compte;
+import fr.abes.theses.thesesmisc.entities.CompteSTEP;
 import fr.abes.theses.thesesmisc.entities.Document;
 
 public class DocumentProcess {
@@ -11,6 +12,7 @@ public class DocumentProcess {
     public String url;
 
     public Compte compte;
+    public CompteSTEP compteSTEP;
 
     public DocumentProcess(Document document, IdToChange idToChange) {
         this.document = document;
@@ -31,5 +33,11 @@ public class DocumentProcess {
         this.document = document;
         this.idToChange = idToChange;
         this.url = url;
+    }
+
+    public DocumentProcess(Document document, IdToChange idToChange, CompteSTEP compteSTEP) {
+        this.document = document;
+        this.idToChange = idToChange;
+        this.compteSTEP = compteSTEP;
     }
 }

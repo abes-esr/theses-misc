@@ -35,6 +35,16 @@ public class Tef {
         }
     }
 
+    public boolean deleteWhiteSpaceIdSourceStep() throws InstantiationException, DocumentException, IOException {
+        checkDocumenTef();
+        boolean edited = XPathService.deleteWhiteSpaceIdSourceStep(documentTef);
+
+        if (edited){
+            deleteCariageReturn();
+        }
+        return edited;
+    }
+
     public boolean deleteTheseEcritAcademique() throws InstantiationException, IOException, DocumentException {
         checkDocumenTef();
         boolean edited = XPathService.deleteThesEcritAcademique(documentTef);

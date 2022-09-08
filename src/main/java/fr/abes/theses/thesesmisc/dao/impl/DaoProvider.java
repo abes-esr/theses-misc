@@ -2,6 +2,7 @@ package fr.abes.theses.thesesmisc.dao.impl;
 
 
 import fr.abes.theses.thesesmisc.dao.ICompte;
+import fr.abes.theses.thesesmisc.dao.ICompteSTEP;
 import fr.abes.theses.thesesmisc.dao.IDocumentDao;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
@@ -16,4 +17,7 @@ public class DaoProvider {
 
     @Resource
     private ICompte compte;
+
+    @Resource
+    private ICompteSTEP compteSTEP;
 }
