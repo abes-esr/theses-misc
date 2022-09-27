@@ -24,11 +24,11 @@ public class Document implements Serializable, GenericEntity<Integer> {
     @Column(name = "DOC", columnDefinition = "XMLType")
     private String doc;
 
+    @Column(name = "CODEETAB")
+    private String codeEtab;
     @Column(name = "TEXTE")
     private String texte;
 
-    @Column(name = "CODEETAB")
-    private String codeEtab;
 
     @Column(name = "ENVOISOLR")
     private Integer envoiSolr;
@@ -46,8 +46,6 @@ public class Document implements Serializable, GenericEntity<Integer> {
     public Integer getId() {
         return idDoc;
     }
-
-
 
 
 }

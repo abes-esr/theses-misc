@@ -33,26 +33,25 @@ public class CompteSTEP {
     private String CODEETAB;
 
     @Column(name = "DTCREA")
-    private String DTCREA;
+    private Date DTCREA;
 
     @Column(name = "DTMODIF")
-    private String DTMODIF;
+    private Date DTMODIF;
 
     @Column(name = "ESTACTIF")
-    private String ESTACTIF;
+    private Integer ESTACTIF;
 
     @Column(name = "PSEUDO")
     private String PSEUDO;
 
-    @Column(name = "ROLE", insertable = false, updatable = false)
+    @Column(name = "ROLE")
     private String role;
 
 /*    @Column(name = "PSEUDO")
     private String pseudo;*/
 
-/*    @Override
     public Integer getId() {
         return idCompte;
-    }*/
+    }
 }
 

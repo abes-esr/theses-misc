@@ -35,9 +35,9 @@ public class DeleteDoublonSolrReader implements ItemReader<String> {
                 ligne.add(record.get(i));
             }
 
-            // On supprime le plus recent de la liste
+           /* // On supprime le plus recent de la liste
             ligne.sort((o1, o2) -> (int) (Long.parseLong(o1) - Long.parseLong(o2)));
-            ligne.remove(ligne.size() - 1);
+            ligne.remove(ligne.size() - 1);*/
 
             idToDeletes.addAll(ligne);
         }

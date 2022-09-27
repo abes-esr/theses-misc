@@ -34,7 +34,7 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
                 if (documentProcess.compte != null) {
                     try {
                         service.getDao().getCompte().save(documentProcess.compte);
-                        log.info("Compte edited IdDoc : " + documentProcess.document.getIdDoc());
+                        log.info("Compte edited : " + documentProcess.compte.getIdCompte());
                     } catch (Exception e) {
                         log.error("Error in writer, Compte IdDoc : " + documentProcess.document.getIdDoc());
                     }

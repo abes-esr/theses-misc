@@ -115,7 +115,7 @@ public class BatchConfiguration {
     public Job deleteHistEtCritiqueJob(@Qualifier("histoireEtCritiqueReader") ItemReader reader, @Qualifier("histoireEtCritiqueProcessor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer) {
         return jobs
                 .get("deleteHistEtCritique").incrementer(incrementer())
-                .start(deleteSolrIndex(reader, processor,writer))
+                .start(deleteHistEtCritique(reader, processor,writer))
                 .build();
     }
     @Bean
@@ -124,7 +124,7 @@ public class BatchConfiguration {
                                                @Qualifier("tefWriter") ItemWriter writer) {
         return jobs
                 .get("deleteWhiteSpaceIdSourceStep").incrementer(incrementer())
-                .start(deleteSolrIndex(reader, processor,writer))
+                .start(deleteWhiteSpaceIdSourceStepStep(reader, processor,writer))
                 .build();
     }
 

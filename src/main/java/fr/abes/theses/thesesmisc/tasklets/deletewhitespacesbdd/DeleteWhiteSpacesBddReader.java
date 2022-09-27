@@ -37,7 +37,7 @@ public class DeleteWhiteSpacesBddReader implements ItemReader<DocumentProcess> {
     public DeleteWhiteSpacesBddReader(DocumentService service) throws IOException {
         this.service = service;
 
-        Reader in = new FileReader("src/main/resources/UBFC-STEP.csv");
+        Reader in = new FileReader("src/main/resources/UBFC-STAR.csv");
         CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(';').withFirstRecordAsHeader();
         Iterable<CSVRecord> records = fmt.parse(in);
 
@@ -52,7 +52,7 @@ public class DeleteWhiteSpacesBddReader implements ItemReader<DocumentProcess> {
 
             IdToChange idToChange = new IdToChange();;
             idToChange.Id = String.valueOf(ids.get(iIds.getAndIncrement()));
-            Optional<CompteSTEP> compte = Optional.ofNullable(service.getDao().getCompteSTEP().getCompteByIdDoc(Integer.valueOf(idToChange.Id)));
+            Optional<Compte> compte = Optional.ofNullable(service.getDao().getCompte().getCompteByIdDoc(Integer.valueOf(idToChange.Id)));
             return new DocumentProcess(
                     service.getDao().getDocument().findById(Integer.parseInt(idToChange.Id)).orElse(null),
                     idToChange,
