@@ -26,19 +26,19 @@ public class Document implements Serializable, GenericEntity<Integer> {
 
     @Column(name = "CODEETAB")
     private String codeEtab;
-    @Column(name = "TEXTE")
+/*    @Column(name = "TEXTE")
     private String texte;
 
 
     @Column(name = "ENVOISOLR")
-    private Integer envoiSolr;
+    private Integer envoiSolr;*/
 
     public Document(Integer idDoc, String doc, String texte, String codeEtab, Integer envoiSolr) {
         this.idDoc = idDoc;
         this.doc = doc;
-        this.texte = texte;
         this.codeEtab = codeEtab;
-        this.envoiSolr = envoiSolr;
+        /*this.texte = texte;
+        this.envoiSolr = envoiSolr;*/
     }
 
 

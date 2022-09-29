@@ -6,4 +6,6 @@ public class IdToChange {
     public String etab;
     public String codeInd;
     public String url;
+    public String numeroPAC;
+    public String nnt;
 }

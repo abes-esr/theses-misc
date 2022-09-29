@@ -127,6 +127,15 @@ public class BatchConfiguration {
                 .start(deleteWhiteSpaceIdSourceStepStep(reader, processor,writer))
                 .build();
     }
+    @Bean
+    public Job retourCinesSTARJob(@Qualifier("retournCinesReader") ItemReader reader,
+                                               @Qualifier("retournCinesProcessor") ItemProcessor processor,
+                                               @Qualifier("tefWriter") ItemWriter writer) {
+        return jobs
+                .get("retourCinesSTARJob").incrementer(incrementer())
+                .start(deleteWhiteSpaceIdSourceStepStep(reader, processor,writer))
+                .build();
+    }
 
 
     private Step deleteWhiteSpaceIdSourceStepStep(ItemReader reader, ItemProcessor processor, ItemWriter writer) {

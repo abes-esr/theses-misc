@@ -119,4 +119,15 @@ public class Tef {
         XPathService.changeContentId(idSource, documentTef);
         return true;
     }
+
+    public boolean retourCinesSTAR(String numeroPAC) {
+        XPathService.addNumeroPACStar(numeroPAC, documentTef);
+        XPathService.addEtatRetourCines(documentTef);
+        return true;
+    }
+
+    public boolean retourCinesSTEP(String nnt) {
+        XPathService.addEtatRetourCinesStep(documentTef, nnt);
+        return true;
+    }
 }

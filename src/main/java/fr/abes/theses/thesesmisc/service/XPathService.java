@@ -11,8 +11,9 @@ import java.util.List;
 @Slf4j
 public class XPathService {
 
-    public static final String XPATH_STAR_GESTION = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion";
-    public static final String XPATH_STAR_GEST_TRTS_SORTIES_SUDOC = XPATH_STAR_GESTION + "/traitements/sorties/sudoc";
+    public static final String STAR_GESTION = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion";
+    public static final String STAR_GEST_TRTS_SORTIES_SUDOC = STAR_GESTION + "/traitements/sorties/sudoc";
+    public static final String STEP_GESTION = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/step_gestion";
 
     public static final String SUBDIVISION_RAMEAU = "/mets:mets/mets:dmdSec[2]/mets:mdWrap/mets:xmlData/tef:thesisRecord/tef:sujetRameau/tef:vedetteRameauNomCommun/tef:subdivision";
     public static final String SUJET_RAMEAU = "/mets:mets/mets:dmdSec[2]/mets:mdWrap/mets:xmlData/tef:thesisRecord/tef:sujetRameau";
@@ -24,6 +25,16 @@ public class XPathService {
     public static final String ETAB_DIFFUSEUR = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements/sorties/diffusion/etabDiffuseur";
 
     public static final String TEF_EDITION = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/tef:edition";
+
+    public static final String SORTIES_CINES = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements/sorties/cines";
+
+    public static final String WORKFLOW = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/workflow";
+    public static final String WORKFLOW_SCOL = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/workflow/rolesMD/SCOL";
+    public static final String WORKFLOW_BIBL = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/workflow/rolesMD/BIBL";
+    public static final String WORKFLOW_FICH = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/workflow/rolesMD/FICH";
+    public static final String WORKFLOW_VALID = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/workflow/VALID";
+    public static final String STEP_NNT = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/step_gestion/traitements/sorties/nnt";
+
 
     public static final List<String> typeBalises = new ArrayList<>(
             Arrays.asList("tef:vedetteRameauPersonne",
@@ -219,6 +230,34 @@ public class XPathService {
     public static boolean deleteWhiteSpaceIdSourceStar(Document documentTef) {
         String idSource = XPathService.getAttribut(ID_SOURCE_STAR, "idSource", documentTef).replace(" ", "");
         XPathService.setAttribut(ID_SOURCE_STAR, "idSource", idSource, documentTef);
+        return true;
+    }
+
+    public static boolean addNumeroPACStar(String numeroPAC, Document documentTef) {
+        XPathService.setAttribut(SORTIES_CINES, "numeroPAC", numeroPAC, documentTef);
+        return true;
+    }
+
+    public static boolean addEtatRetourCines(Document documentTef) {
+        XPathService.setAttribut(SORTIES_CINES, "indicCines", "OK", documentTef);
+        XPathService.setAttribut(SORTIES_CINES, "dateCines", "2022-09-20T00:00:01Z", documentTef);
+        XPathService.setAttribut(STAR_GESTION, "etat", "WFpostArchivage", documentTef);
+        XPathService.setAttribut(WORKFLOW, "etatWF", "postAtraiter", documentTef);
+        XPathService.setAttribut(WORKFLOW_SCOL, "etatMD", "postAtraiter", documentTef);
+        XPathService.setAttribut(WORKFLOW_BIBL, "etatMD", "postAtraiter", documentTef);
+        XPathService.setAttribut(WORKFLOW_FICH, "etatMD", "postAtraiter", documentTef);
+        XPathService.setAttribut(WORKFLOW_VALID, "etatVALID", "archivee", documentTef);
+        return false;
+    }
+
+    public static boolean addEtatRetourCinesStep(Document documentTef, String nnt) {
+        XPathService.setAttribut(STEP_NNT, "dateNnt", "2022-09-20T00:00:01Z", documentTef);
+        XPathService.setAttribut(STEP_NNT, "sourceNnt", "star", documentTef);
+        XPathService.setAttribut(STEP_NNT, "indicNnt", "OK", documentTef);
+        XPathService.setValue(STEP_NNT, nnt, documentTef);
+
+        XPathService.setAttribut(STEP_GESTION, "stepEtat", "these", documentTef);
+
         return true;
     }
 }
