@@ -42,6 +42,46 @@ public class DeleteDoublonSolrReader implements ItemReader<String> {
             idToDeletes.addAll(ligne);
         }
     }
+    /*
+        public AddThesesStarReader(DocumentService service) throws IOException {
+        this.service = service;
+
+        Reader in = new FileReader("src/main/resources/Theses_STAR_ressusciter.csv");
+        CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(';').withFirstRecordAsHeader();
+        Iterable<CSVRecord> records = fmt.parse(in);
+
+        for (CSVRecord record : records) {
+
+            try {
+                service.getDao().getDocument().save(new Document(
+                        Integer.parseInt(record.get(0)),
+                        Files.readString(Path.of("src/main/resources/ressicutee/" + record.get(0) + ".xml")),
+                        null,
+                        record.get(2),
+                        1
+
+                ));
+                log.info("todo bien : " + record.get(0));
+            } catch (Exception e) {
+                log.info("erreur : " + record.get(0));
+                log.error(e.toString());
+            }
+
+            /*try {
+                FileWriter f = new FileWriter( record.get(0)+".xml");
+                f.write(
+                        service.getDao().getDocument().findByNnt(record.get(1)).orElse(null).getDoc()
+                );
+                f.close();
+            } catch (Exception e) {
+                log.error("not found the " + record.get(0));
+            }
+
+    //ids.add(Integer.parseInt(record.get(0)));
+}
+    }
+
+             */
 
     @Override
     public String read() {
