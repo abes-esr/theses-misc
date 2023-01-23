@@ -1,4 +1,4 @@
-package fr.abes.theses.thesesmisc.tasklets.theseecritacademiquechunk;
+package fr.abes.theses.thesesmisc.tasklets.changeidsourceentchunk;
 
 import fr.abes.theses.thesesmisc.model.DocumentProcess;
 import fr.abes.theses.thesesmisc.service.impl.DocumentService;
@@ -11,12 +11,12 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class TefWriter implements ItemWriter<DocumentProcess> {
+public class ChangeIdSourceWritter implements ItemWriter<DocumentProcess> {
 
     @Getter
     private final DocumentService service;
 
-    public TefWriter(DocumentService service) {
+    public ChangeIdSourceWritter(DocumentService service) {
         this.service = service;
     }
 
@@ -31,16 +31,17 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
                     log.error("Error in writer, doc : " + documentProcess.document.getIdDoc());
                 }
 
- /*               if (documentProcess.compte != null) {
+                if (documentProcess.compte != null) {
                     try {
                         service.getDao().getCompte().save(documentProcess.compte);
+                        //service.getDao().getCompteSTEP().save(documentProcess.compteSTEP);
                         log.info("Compte edited : " + documentProcess.compte.getIdCompte());
                     } catch (Exception e) {
                         log.error("Error in writer, Compte IdDoc : " + documentProcess.document.getIdDoc());
                     }
                 } else {
                     log.error("Compte not edited IdDoc : " + documentProcess.document.getIdDoc());
-                }*/
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersIncrementer;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.annotation.BeforeRead;
+import org.springframework.batch.core.configuration.StepRegistry;
 import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -137,7 +138,24 @@ public class BatchConfiguration {
                 .build();
     }
 
+    @Bean
+    public Job changeIdSource(@Qualifier("changeIdSourceReader") ItemReader reader,
+                              @Qualifier("changeIdSourceProcessor") ItemProcessor processor,
+                              @Qualifier("changeIdSourceWritter") ItemWriter writer) {
+        return jobs
+                .get("changeIdSource").incrementer(incrementer())
+                .start(genericStep(reader, processor,writer))
+                .build();
+    }
 
+
+    private Step genericStep(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
+        return steps.get("genericStep").chunk(chunkSize)
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
+                .build();
+    }
     private Step deleteWhiteSpaceIdSourceStepStep(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
         return steps.get("deleteWhiteSpaceIdSourceStep").chunk(chunkSize)
                 .reader(reader)
