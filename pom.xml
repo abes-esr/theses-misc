@@ -9,10 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>fr.abes.theses</groupId>
-	<artifactId>thesesmisc</artifactId>
+	<artifactId>theses-misc</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>theses-misc</name>
-	<description>Delete subdivision Thèses et écrits académiques</description>
 
 	<properties>
 		<java.version>11</java.version>
@@ -94,7 +93,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>RELEASE</version>
+			<version>1.18.26</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>

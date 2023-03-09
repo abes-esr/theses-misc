@@ -130,4 +130,13 @@ public class Tef {
         XPathService.addEtatRetourCinesStep(documentTef, nnt);
         return true;
     }
+
+    public boolean changeIdSourceStar(String odlIdSource, String newIdSource) {
+        XPathService.changeIdSourceStar(documentTef, odlIdSource, newIdSource);
+        return true;
+    }
+    public boolean changeIdSourceStep(String odlIdSource, String newIdSource) {
+        XPathService.changeIdSourceStep(documentTef, odlIdSource, newIdSource);
+        return true;
+    }
 }

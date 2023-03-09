@@ -30,7 +30,7 @@ public class DeleteDoublonSolrWriter implements ItemWriter<String> {
 
     @Override
     public void write(List<? extends String> list) throws Exception {
-        String urlSolrUpdate = urlSolr + "/solr1/update";
+        String urlSolrUpdate = urlSolr + "/solr2/update";
         for (String id :
                 list) {
             StringWriter sw = new StringWriter();

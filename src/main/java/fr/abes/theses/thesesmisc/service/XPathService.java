@@ -260,4 +260,15 @@ public class XPathService {
 
         return true;
     }
+
+    public static boolean changeIdSourceStar(Document documentTef, String odlIdSource, String newIdSource) {
+        String idSource = XPathService.getAttribut(ID_SOURCE_STAR, "idSource", documentTef).replace(odlIdSource, newIdSource);
+        XPathService.setAttribut(ID_SOURCE_STAR, "idSource", idSource, documentTef);
+        return true;
+    }
+    public static boolean changeIdSourceStep(Document documentTef, String odlIdSource, String newIdSource) {
+        String idSource = XPathService.getAttribut(ID_SOURCE_STEP, "idSource", documentTef).replace(odlIdSource, newIdSource);
+        XPathService.setAttribut(ID_SOURCE_STEP, "idSource", idSource, documentTef);
+        return true;
+    }
 }
