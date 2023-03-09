@@ -22,7 +22,7 @@ public class ChangeIdSourceWritter implements ItemWriter<DocumentProcess> {
 
     @Override
     public void write(List<? extends DocumentProcess> list) throws Exception {
-        for (DocumentProcess documentProcess : list) {
+        /*for (DocumentProcess documentProcess : list) {
             if (documentProcess.edited) {
                 try {
                     service.getDao().getDocument().save(documentProcess.document);
@@ -34,15 +34,25 @@ public class ChangeIdSourceWritter implements ItemWriter<DocumentProcess> {
                 if (documentProcess.compte != null) {
                     try {
                         service.getDao().getCompte().save(documentProcess.compte);
-                        //service.getDao().getCompteSTEP().save(documentProcess.compteSTEP);
                         log.info("Compte edited : " + documentProcess.compte.getIdCompte());
                     } catch (Exception e) {
                         log.error("Error in writer, Compte IdDoc : " + documentProcess.document.getIdDoc());
                     }
-                } else {
-                    log.error("Compte not edited IdDoc : " + documentProcess.document.getIdDoc());
                 }
+                if (documentProcess.compteSTEP != null) {
+                    try {
+                        service.getDao().getCompteSTEP().save(documentProcess.compteSTEP);
+                        log.info("Compte STEP edited : " + documentProcess.compteSTEP.getIdCompte());
+                    } catch (Exception e) {
+                        log.error("Error in writer, Compte IdDoc : " + documentProcess.document.getIdDoc());
+                    }
+                }
+                if (documentProcess.compte == null && documentProcess.compteSTEP == null) {
+                    log.error("Compte is null for iddoc : " + documentProcess.document.getIdDoc());
+                }
+            } else {
+                log.error("Document not edited, idToChange : " + documentProcess.idToChange.Id);
             }
-        }
+        }*/
     }
 }

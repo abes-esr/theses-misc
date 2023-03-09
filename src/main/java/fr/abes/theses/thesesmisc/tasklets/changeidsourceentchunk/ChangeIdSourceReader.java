@@ -36,16 +36,14 @@ public class ChangeIdSourceReader implements ItemReader<DocumentProcess> {
     public ChangeIdSourceReader(DocumentService service) throws IOException {
         this.service = service;
 
-        Reader in = new FileReader("src/main/resources/ChangeIdSource.csv");
+        Reader in = new FileReader("src/main/resources/ChangeIdSourceSTAR.csv");
+        //Reader in = new FileReader("src/main/resources/ChangeIdSourceSTEP.csv");
         CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(',');
         Iterable<CSVRecord> records = fmt.parse(in);
 
         for (CSVRecord record : records) {
-
             IdToChange idToChange = new IdToChange();
-
             idToChange.Id = record.get(0);
-
             idToChanges.add(idToChange);
         }
     }
@@ -70,6 +68,7 @@ public class ChangeIdSourceReader implements ItemReader<DocumentProcess> {
                     service.getDao().getDocument().findById(Integer.parseInt(idToChange.Id)).orElse(null),
                     idToChange,
                     compte
+                    //compteSTEP
             );
         } else {
             return null;

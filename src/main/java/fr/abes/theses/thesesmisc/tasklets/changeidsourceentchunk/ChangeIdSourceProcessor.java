@@ -15,22 +15,29 @@ public class ChangeIdSourceProcessor implements ItemProcessor<DocumentProcess, D
         String newIdSource = "0353074B";
         // Change IdSourceEnt
         try {
-            Tef documentTef = new Tef(documentProcess.document.getDoc());
-            documentProcess.edited = documentTef.changeIdSourceStar(oldIdSource, newIdSource);
+            if (!documentProcess.compte.getLogin().contains(newIdSource)){
+                log.info("Id STAR : " + documentProcess.idToChange.Id);
+            }
+            //Tef documentTef = new Tef(documentProcess.document.getDoc());
+            //documentProcess.edited = documentTef.changeIdSourceStar(oldIdSource, newIdSource);
             //documentProcess.edited = documentTef.changeIdSourceStep(oldIdSource, newIdSource);
-            documentProcess.document.setDoc(documentTef.documentTef.asXML());
+            //documentProcess.document.setDoc(documentTef.documentTef.asXML());
         } catch (Exception e){
-            log.info("Error in processor, doc : " + documentProcess.document.getIdDoc());
+            log.error("Error in processor, doc : " + documentProcess.idToChange.Id + "\n" + e);
         }
 
         // Change LOGIN,MDP et le NUMIDENT
-        //STAR
-        documentProcess.compte.setLogin(documentProcess.compte.getLogin().replace(oldIdSource, newIdSource));
-        documentProcess.compte.setMdp(documentProcess.compte.getMdp().replace(oldIdSource, newIdSource));
-        documentProcess.compte.setNUMIDENT(documentProcess.compte.getNUMIDENT().replace(oldIdSource, newIdSource));
-        //STEP
-        //documentProcess.compteSTEP.setLogin(documentProcess.compteSTEP.getLogin().replace(oldIdSource, newIdSource));
 
+        try {
+            //STAR
+            /*documentProcess.compte.setLogin(documentProcess.compte.getLogin().replace(oldIdSource, newIdSource));
+            documentProcess.compte.setMdp(documentProcess.compte.getMdp().replace(oldIdSource, newIdSource));
+            documentProcess.compte.setNUMIDENT(documentProcess.compte.getNUMIDENT().replace(oldIdSource, newIdSource));*/
+            //STEP
+            //documentProcess.compteSTEP.setLogin(documentProcess.compteSTEP.getLogin().replace(oldIdSource, newIdSource));
+        } catch (Exception e) {
+            log.error("Error in processor, compte : " + documentProcess.idToChange.Id + "\n" + e);
+        }
 
 
         return documentProcess;
