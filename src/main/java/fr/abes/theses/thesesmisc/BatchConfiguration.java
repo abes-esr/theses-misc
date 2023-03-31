@@ -150,6 +150,14 @@ public class BatchConfiguration {
                 .build();
     }
 
+    @Bean
+    public Job searchAndReplace(@Qualifier("searchAndReplaceReader") ItemReader reader,
+                            @Qualifier("searchAndReplaceProcessor") ItemProcessor processor,
+                            @Qualifier("tefWriter") ItemWriter writer) {
+        return jobs.get("searchAndReplace").incrementer(incrementer())
+                .start(genericStep(reader, processor, writer))
+                .build();
+    }
 
     private Step genericStep(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
         return steps.get("genericStep").chunk(chunkSize)

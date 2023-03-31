@@ -13,6 +13,7 @@ public class DocumentProcess {
 
     public Compte compte;
     public CompteSTEP compteSTEP;
+    public SearchReplace searchReplace;
 
     public DocumentProcess(Document document, IdToChange idToChange) {
         this.document = document;
@@ -39,5 +40,10 @@ public class DocumentProcess {
         this.document = document;
         this.idToChange = idToChange;
         this.compteSTEP = compteSTEP;
+    }
+
+    public DocumentProcess(Document document, SearchReplace searchReplace) {
+        this.document = document;
+        this.searchReplace = searchReplace;
     }
 }

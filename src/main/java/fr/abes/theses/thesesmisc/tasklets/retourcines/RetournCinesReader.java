@@ -54,18 +54,21 @@ public class RetournCinesReader implements ItemReader<DocumentProcess>, StepExec
 
     public RetournCinesReader(DocumentService service) throws IOException {
         this.service = service;
+        try {
+            Reader in = new FileReader("src/main/resources/retourCinesSTEP.csv");
+            CSVFormat fmt = CSVFormat.DEFAULT.withDelimiter(';').withFirstRecordAsHeader();
+            Iterable<CSVRecord> records = fmt.parse(in);
 
-        Reader in = new FileReader("src/main/resources/retourCinesSTEP.csv");
-        CSVFormat fmt = CSVFormat.DEFAULT.withDelimiter(';').withFirstRecordAsHeader();
-        Iterable<CSVRecord> records = fmt.parse(in);
+            for (CSVRecord record : records) {
+                IdToChange idToChange = new IdToChange();
 
-        for (CSVRecord record : records) {
-            IdToChange idToChange = new IdToChange();
+                idToChange.Id = record.get(1);
+                idToChange.nnt = record.get(2);
 
-            idToChange.Id = record.get(1);
-            idToChange.nnt = record.get(2);
-
-            idToChanges.add(idToChange);
+                idToChanges.add(idToChange);
+            }
+        } catch (Exception e) {
+            log.error("Erreur dans le constructeur" + e);
         }
     }
 

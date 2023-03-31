@@ -31,17 +31,21 @@ public class HistoireEtCritiqueReader implements ItemReader<DocumentProcess> {
 
     private AtomicInteger iIds = new AtomicInteger();
 
-    private List<Integer> ids = new ArrayList<>();;
+    private List<Integer> ids = new ArrayList<>();
+    ;
 
     public HistoireEtCritiqueReader(DocumentService service) throws IOException {
         this.service = service;
+        try {
+            Reader in = new FileReader("src/main/resources/hist_critique.csv");
+            CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(',').withFirstRecordAsHeader();
+            Iterable<CSVRecord> records = fmt.parse(in);
 
-        Reader in = new FileReader("src/main/resources/hist_critique.csv");
-        CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(',').withFirstRecordAsHeader();
-        Iterable<CSVRecord> records = fmt.parse(in);
-
-        for (CSVRecord record : records) {
-            ids.add(Integer.parseInt(record.get(0)));
+            for (CSVRecord record : records) {
+                ids.add(Integer.parseInt(record.get(0)));
+            }
+        } catch (Exception e) {
+            log.error("Erreur dans le constructeur" + e);
         }
     }
 
@@ -49,7 +53,8 @@ public class HistoireEtCritiqueReader implements ItemReader<DocumentProcess> {
     public DocumentProcess read() {
         if (iIds.get() < ids.size()) {
 
-            IdToChange idToChange = new IdToChange();;
+            IdToChange idToChange = new IdToChange();
+            ;
             idToChange.Id = String.valueOf(ids.get(iIds.getAndIncrement()));
             return new DocumentProcess(
                     service.getDao().getDocument().findById(Integer.parseInt(idToChange.Id)).orElse(null),

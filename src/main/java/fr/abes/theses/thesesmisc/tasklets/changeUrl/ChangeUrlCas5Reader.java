@@ -33,18 +33,21 @@ public class ChangeUrlCas5Reader implements ItemReader<DocumentProcess>, StepExe
 
     public ChangeUrlCas5Reader(DocumentService service) throws IOException {
         this.service = service;
+        try {
+            Reader in = new FileReader("src/main/resources/CAS5ajout.csv");
+            CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(',').withFirstRecordAsHeader();
+            Iterable<CSVRecord> records = fmt.parse(in);
 
-        Reader in = new FileReader("src/main/resources/CAS5ajout.csv");
-        CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(',').withFirstRecordAsHeader();
-        Iterable<CSVRecord> records = fmt.parse(in);
+            for (CSVRecord record : records) {
+                IdToChange idToChange = new IdToChange();
 
-        for (CSVRecord record : records) {
-            IdToChange idToChange = new IdToChange();
+                idToChange.Id = record.get("ID");
+                idToChange.url = record.get("URL");
 
-            idToChange.Id = record.get("ID");
-            idToChange.url = record.get("URL");
-
-            idToChanges.add(idToChange);
+                idToChanges.add(idToChange);
+            }
+        } catch (Exception e) {
+            log.error("Erreur dans le constructeur" + e);
         }
     }
 

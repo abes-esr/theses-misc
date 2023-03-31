@@ -32,17 +32,21 @@ public class DeleteWhiteSpacesBddReader implements ItemReader<DocumentProcess> {
 
     private AtomicInteger iIds = new AtomicInteger();
 
-    private List<Integer> ids = new ArrayList<>();;
+    private List<Integer> ids = new ArrayList<>();
+    ;
 
     public DeleteWhiteSpacesBddReader(DocumentService service) throws IOException {
         this.service = service;
+        try {
+            Reader in = new FileReader("src/main/resources/UBFC-STAR.csv");
+            CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(';').withFirstRecordAsHeader();
+            Iterable<CSVRecord> records = fmt.parse(in);
 
-        Reader in = new FileReader("src/main/resources/UBFC-STAR.csv");
-        CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(';').withFirstRecordAsHeader();
-        Iterable<CSVRecord> records = fmt.parse(in);
-
-        for (CSVRecord record : records) {
-            ids.add(Integer.parseInt(record.get(0)));
+            for (CSVRecord record : records) {
+                ids.add(Integer.parseInt(record.get(0)));
+            }
+        } catch (Exception e) {
+            log.error("Erreur dans le constructeur" + e);
         }
     }
 
@@ -50,7 +54,8 @@ public class DeleteWhiteSpacesBddReader implements ItemReader<DocumentProcess> {
     public DocumentProcess read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
         if (iIds.get() < ids.size()) {
 
-            IdToChange idToChange = new IdToChange();;
+            IdToChange idToChange = new IdToChange();
+            ;
             idToChange.Id = String.valueOf(ids.get(iIds.getAndIncrement()));
             Optional<Compte> compte = Optional.ofNullable(service.getDao().getCompte().getCompteByIdDoc(Integer.valueOf(idToChange.Id)));
             return new DocumentProcess(
