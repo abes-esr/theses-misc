@@ -151,6 +151,16 @@ public class BatchConfiguration {
     }
 
     @Bean
+    public Job checkIndexBdd(@Qualifier("checkIndexBddReader") ItemReader reader,
+                             @Qualifier("checkIndexBddProcessor") ItemProcessor processor,
+                             @Qualifier("checkIndexBddWriter") ItemWriter writer) {
+        return jobs
+                .get("checkIndexBdd").incrementer(incrementer())
+                .start(genericStep(reader, processor,writer))
+                .build();
+    }
+
+    @Bean
     public Job searchAndReplace(@Qualifier("searchAndReplaceReader") ItemReader reader,
                             @Qualifier("searchAndReplaceProcessor") ItemProcessor processor,
                             @Qualifier("tefWriter") ItemWriter writer) {

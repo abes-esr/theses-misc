@@ -30,15 +30,13 @@ public class DeleteDoublonSolrWriter implements ItemWriter<String> {
 
     @Override
     public void write(List<? extends String> list) throws Exception {
-
         /**
          * solr1 : STAR
          * solr2 : Theses
          * solrSujet : STEP
          */
 
-
-        String urlSolrUpdate = urlSolr + "/solr1/update";
+        String urlSolrUpdate = urlSolr + "/update";
         for (String id :
                 list) {
             StringWriter sw = new StringWriter();
@@ -51,7 +49,7 @@ public class DeleteDoublonSolrWriter implements ItemWriter<String> {
         StringWriter sw = new StringWriter();
         postData(new StringReader("<commit/>"), sw, urlSolrUpdate);
 
-        for (String id : list) {
+/*        for (String id : list) {
             try {
                 if (service.getDao().getDocument().findById(Integer.valueOf(id)).isPresent()) {
                     service.getDao().getDocument().deleteById(Integer.valueOf(id));
@@ -62,7 +60,7 @@ public class DeleteDoublonSolrWriter implements ItemWriter<String> {
             } catch (Exception e) {
                 log.warn("Erreur lors de la suppression de l'id : " + id + " dans la bdd");
             }
-        }
+        }*/
     }
 
     /**
