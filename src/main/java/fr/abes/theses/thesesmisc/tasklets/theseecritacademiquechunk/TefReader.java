@@ -57,19 +57,23 @@ public class TefReader implements ItemReader<DocumentProcess>, StepExecutionList
     public TefReader(DocumentService service) throws IOException {
         this.service = service;
 
-        Reader in = new FileReader("src/main/resources/UNIPdoc.csv");
-        CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(';').withFirstRecordAsHeader();
-        Iterable<CSVRecord> records = fmt.parse(in);
+        try {
+            Reader in = new FileReader("src/main/resources/UNIPdoc.csv");
+            CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(';').withFirstRecordAsHeader();
+            Iterable<CSVRecord> records = fmt.parse(in);
 
-        for (CSVRecord record : records) {
-            IdToChange idToChange = new IdToChange();
+            for (CSVRecord record : records) {
+                IdToChange idToChange = new IdToChange();
 
-            idToChange.Id = record.get("Id");
-            idToChange.oldCodeInd = record.get("OLD_COD_IND");
-            idToChange.etab = record.get("ETAB");
-            idToChange.codeInd = record.get("COD_IND");
+                idToChange.Id = record.get("Id");
+                idToChange.oldCodeInd = record.get("OLD_COD_IND");
+                idToChange.etab = record.get("ETAB");
+                idToChange.codeInd = record.get("COD_IND");
 
-            idToChanges.add(idToChange);
+                idToChanges.add(idToChange);
+            }
+        } catch (Exception e) {
+            log.error("Erreur dans le constructeur" + e);
         }
     }
 

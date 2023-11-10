@@ -22,7 +22,7 @@ public class ChangeIdSourceWritter implements ItemWriter<DocumentProcess> {
 
     @Override
     public void write(List<? extends DocumentProcess> list) throws Exception {
-        /*for (DocumentProcess documentProcess : list) {
+        for (DocumentProcess documentProcess : list) {
             if (documentProcess.edited) {
                 try {
                     service.getDao().getDocument().save(documentProcess.document);
@@ -53,6 +53,6 @@ public class ChangeIdSourceWritter implements ItemWriter<DocumentProcess> {
             } else {
                 log.error("Document not edited, idToChange : " + documentProcess.idToChange.Id);
             }
-        }*/
+        }
     }
 }

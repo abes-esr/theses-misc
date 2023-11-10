@@ -21,7 +21,7 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
     }
 
     @Override
-    public void write(List<? extends DocumentProcess> list) throws Exception {
+    public void write(List<? extends DocumentProcess> list) {
         for (DocumentProcess documentProcess : list) {
             if (documentProcess.edited) {
                 try {
@@ -30,6 +30,13 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
                 } catch (Exception e) {
                     log.error("Error in writer, doc : " + documentProcess.document.getIdDoc());
                 }
+            } else {
+                if (documentProcess.document != null) {
+                    log.info("Compte not edited IdDoc : " + documentProcess.document.getIdDoc());
+                } else {
+                    log.warn("Le document est null, vérifier l'environnement STAR/SUJETS");
+                }
+            }
 
  /*               if (documentProcess.compte != null) {
                     try {
@@ -41,7 +48,6 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
                 } else {
                     log.error("Compte not edited IdDoc : " + documentProcess.document.getIdDoc());
                 }*/
-            }
         }
     }
 }

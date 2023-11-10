@@ -24,22 +24,26 @@ public class DeleteDoublonSolrReader implements ItemReader<String> {
 
     public DeleteDoublonSolrReader() throws IOException {
 
-        Reader in = new FileReader("src/main/resources/DoublonIdsToDelete.csv");
-        CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(',');
-        Iterable<CSVRecord> records = fmt.parse(in);
+        try {
+            Reader in = new FileReader("src/main/resources/DoublonIdsToDelete.csv");
+            CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(',').withFirstRecordAsHeader();
+            Iterable<CSVRecord> records = fmt.parse(in);
 
-        for (CSVRecord record : records) {
+            for (CSVRecord record : records) {
 
-            List<String> ligne = new ArrayList<>();
-            for (int i = 0; i < record.size(); i++) {
-                ligne.add(record.get(i));
-            }
+                List<String> ligne = new ArrayList<>();
+                for (int i = 0; i < record.size(); i++) {
+                    ligne.add(record.get(i));
+                }
 
            /* // On supprime le plus recent de la liste
             ligne.sort((o1, o2) -> (int) (Long.parseLong(o1) - Long.parseLong(o2)));
             ligne.remove(ligne.size() - 1);*/
 
-            idToDeletes.addAll(ligne);
+                idToDeletes.addAll(ligne);
+            }
+        } catch (Exception e) {
+            log.error("Erreur dans le constructeur" + e);
         }
     }
     /*
@@ -85,7 +89,7 @@ public class DeleteDoublonSolrReader implements ItemReader<String> {
 
     @Override
     public String read() {
-        if (iIds.get() < idToDeletes.size()){
+        if (iIds.get() < idToDeletes.size()) {
             return idToDeletes.get(iIds.getAndIncrement());
         } else {
             return null;
