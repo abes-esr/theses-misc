@@ -65,7 +65,7 @@ public class TefReader implements ItemReader<DocumentProcess>, StepExecutionList
             for (CSVRecord record : records) {
                 IdToChange idToChange = new IdToChange();
 
-                idToChange.Id = record.get("Id");
+                idToChange.id = record.get("Id");
                 idToChange.oldCodeInd = record.get("OLD_COD_IND");
                 idToChange.etab = record.get("ETAB");
                 idToChange.codeInd = record.get("COD_IND");
@@ -86,13 +86,13 @@ public class TefReader implements ItemReader<DocumentProcess>, StepExecutionList
             IdToChange idToChange = idToChanges.get(iIds.getAndIncrement());
             Compte compte = null;
             try {
-                compte = service.getDao().getCompte().getCompteByIdDoc(Integer.valueOf(idToChange.Id));
+                compte = service.getDao().getCompte().getCompteByIdDoc(Integer.valueOf(idToChange.id));
             } catch (Exception e) {
-                log.error("Unable to get Compte objet from table, IdDoc : " + idToChange.Id);
+                log.error("Unable to get Compte objet from table, IdDoc : " + idToChange.id);
                 return new DocumentProcess(null, idToChange, compte);
             }
             return new DocumentProcess(
-                    service.getDao().getDocument().findById(Integer.parseInt(idToChange.Id)).orElse(null),
+                    service.getDao().getDocument().findById(Integer.parseInt(idToChange.id)).orElse(null),
                     idToChange,
                     compte
             );

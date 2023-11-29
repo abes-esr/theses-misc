@@ -51,7 +51,7 @@ public class ChangeIdSourceWritter implements ItemWriter<DocumentProcess> {
                     log.error("Compte is null for iddoc : " + documentProcess.document.getIdDoc());
                 }
             } else {
-                log.error("Document not edited, idToChange : " + documentProcess.idToChange.Id);
+                log.error("Document not edited, idToChange : " + documentProcess.idToChange.id);
             }
         }
     }

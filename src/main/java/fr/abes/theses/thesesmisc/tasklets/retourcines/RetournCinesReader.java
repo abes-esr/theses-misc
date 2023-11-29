@@ -62,7 +62,7 @@ public class RetournCinesReader implements ItemReader<DocumentProcess>, StepExec
             for (CSVRecord record : records) {
                 IdToChange idToChange = new IdToChange();
 
-                idToChange.Id = record.get(1);
+                idToChange.id = record.get(1);
                 idToChange.nnt = record.get(2);
 
                 idToChanges.add(idToChange);
@@ -80,7 +80,7 @@ public class RetournCinesReader implements ItemReader<DocumentProcess>, StepExec
 
             IdToChange idToChange = idToChanges.get(iIds.getAndIncrement());
             return new DocumentProcess(
-                    service.getDao().getDocument().findById(Integer.parseInt(idToChange.Id)).orElse(null),
+                    service.getDao().getDocument().findById(Integer.parseInt(idToChange.id)).orElse(null),
                     idToChange
             );
         } else {

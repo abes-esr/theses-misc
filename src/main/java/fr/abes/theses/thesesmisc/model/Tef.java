@@ -12,6 +12,8 @@ import org.dom4j.io.XMLWriter;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 
@@ -113,6 +115,12 @@ public class Tef {
         writer.write(documentTef);
 
         documentTef = DocumentHelper.parseText(sw.toString());
+    }
+
+    public boolean setDateAbandon(LocalDate dateAbandon, String etat) {
+        XPathService.setDateAbandon(dateAbandon, documentTef);
+        XPathService.setStepEtat(etat, documentTef);
+        return true;
     }
 
     public boolean changeContentId(String idSource) {

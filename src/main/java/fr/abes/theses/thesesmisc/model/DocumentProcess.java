@@ -4,6 +4,8 @@ import fr.abes.theses.thesesmisc.entities.Compte;
 import fr.abes.theses.thesesmisc.entities.CompteSTEP;
 import fr.abes.theses.thesesmisc.entities.Document;
 
+import java.util.Date;
+
 public class DocumentProcess {
     public Document document;
     public boolean edited = false;

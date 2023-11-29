@@ -16,7 +16,7 @@ public class HistoireEtCritiqueProcessor implements ItemProcessor<DocumentProces
             documentProcess.edited = documentTef.deleteHistEtCritique();
             documentProcess.document.setDoc(documentTef.documentTef.asXML());
         } catch (Exception e){
-            log.info("Error in processor, doc : " + documentProcess.idToChange.Id);
+            log.info("Error in processor, doc : " + documentProcess.idToChange.id);
         }
 
         return documentProcess;

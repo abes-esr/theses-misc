@@ -32,7 +32,7 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
                 }
             } else {
                 if (documentProcess.document != null) {
-                    log.info("Compte not edited IdDoc : " + documentProcess.document.getIdDoc());
+                    log.info("Doc not edited IdDoc : " + documentProcess.document.getIdDoc());
                 } else {
                     log.warn("Le document est null, vérifier l'environnement STAR/SUJETS");
                 }

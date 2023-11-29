@@ -35,7 +35,7 @@ public class ChangeContentIdProcessor implements ItemProcessor<DocumentProcess, 
                 log.error("Error in processor, doc : " + documentProcess.document.getIdDoc());
             }
         } else {
-            log.error("Doc or Compte " + documentProcess.idToChange.Id + " not found");
+            log.error("Doc or Compte " + documentProcess.idToChange.id + " not found");
         }
 
         return documentProcess;

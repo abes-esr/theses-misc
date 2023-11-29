@@ -4,8 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.dom4j.*;
 import org.dom4j.tree.BaseElement;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -34,6 +39,8 @@ public class XPathService {
     public static final String WORKFLOW_FICH = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/workflow/rolesMD/FICH";
     public static final String WORKFLOW_VALID = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/workflow/VALID";
     public static final String STEP_NNT = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/step_gestion/traitements/sorties/nnt";
+    public static final String STEP_DATE_ABANDON = "/mets:mets/mets:amdSec/mets:techMD/mets:mdWrap/mets:xmlData/tef:thesisAdmin/suj:vie/suj:dateAbandon";
+    public static final String STEP_SUJ_VIE = "/mets:mets/mets:amdSec/mets:techMD/mets:mdWrap/mets:xmlData/tef:thesisAdmin/suj:vie";
 
 
     public static final List<String> typeBalises = new ArrayList<>(
@@ -227,6 +234,7 @@ public class XPathService {
         XPathService.setAttribut(ID_SOURCE_STEP, "idSource", idSource, documentTef);
         return true;
     }
+
     public static boolean deleteWhiteSpaceIdSourceStar(Document documentTef) {
         String idSource = XPathService.getAttribut(ID_SOURCE_STAR, "idSource", documentTef).replace(" ", "");
         XPathService.setAttribut(ID_SOURCE_STAR, "idSource", idSource, documentTef);
@@ -266,9 +274,32 @@ public class XPathService {
         XPathService.setAttribut(ID_SOURCE_STAR, "idSource", idSource, documentTef);
         return true;
     }
+
     public static boolean changeIdSourceStep(Document documentTef, String odlIdSource, String newIdSource) {
         String idSource = XPathService.getAttribut(ID_SOURCE_STEP, "idSource", documentTef).replace(odlIdSource, newIdSource);
         XPathService.setAttribut(ID_SOURCE_STEP, "idSource", idSource, documentTef);
+        return true;
+    }
+
+    public static boolean setStepEtat(String etat, Document documentTef) {
+        XPathService.setAttribut(STEP_GESTION, "stepEtat", etat, documentTef);
+        return true;
+    }
+
+    public static boolean setDateAbandon(LocalDate dateAbandon, Document documentTef) {
+
+        XPath path = DocumentHelper.createXPath(STEP_DATE_ABANDON);
+        List<Node> elem = path.selectNodes(documentTef);
+
+        for (Node node : elem) {
+            node.setText(dateAbandon.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            return true;
+        }
+
+        BaseElement node = new BaseElement("suj:dateAbandon");
+        node.setText(dateAbandon.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        XPathService.addElement(STEP_SUJ_VIE, node, documentTef);
+
         return true;
     }
 }

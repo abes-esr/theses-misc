@@ -1,7 +1,6 @@
 package fr.abes.theses.thesesmisc.tasklets.deletewhitespacesbdd;
 
 import fr.abes.theses.thesesmisc.entities.Compte;
-import fr.abes.theses.thesesmisc.entities.CompteSTEP;
 import fr.abes.theses.thesesmisc.model.DocumentProcess;
 import fr.abes.theses.thesesmisc.model.IdToChange;
 import fr.abes.theses.thesesmisc.service.impl.DocumentService;
@@ -56,10 +55,10 @@ public class DeleteWhiteSpacesBddReader implements ItemReader<DocumentProcess> {
 
             IdToChange idToChange = new IdToChange();
             ;
-            idToChange.Id = String.valueOf(ids.get(iIds.getAndIncrement()));
-            Optional<Compte> compte = Optional.ofNullable(service.getDao().getCompte().getCompteByIdDoc(Integer.valueOf(idToChange.Id)));
+            idToChange.id = String.valueOf(ids.get(iIds.getAndIncrement()));
+            Optional<Compte> compte = Optional.ofNullable(service.getDao().getCompte().getCompteByIdDoc(Integer.valueOf(idToChange.id)));
             return new DocumentProcess(
-                    service.getDao().getDocument().findById(Integer.parseInt(idToChange.Id)).orElse(null),
+                    service.getDao().getDocument().findById(Integer.parseInt(idToChange.id)).orElse(null),
                     idToChange,
                     compte.orElse(null)
             );

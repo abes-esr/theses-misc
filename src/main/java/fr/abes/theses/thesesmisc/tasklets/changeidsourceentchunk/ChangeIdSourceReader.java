@@ -43,7 +43,7 @@ public class ChangeIdSourceReader implements ItemReader<DocumentProcess> {
 
         for (CSVRecord record : records) {
             IdToChange idToChange = new IdToChange();
-            idToChange.Id = record.get(0);
+            idToChange.id = record.get(0);
             idToChanges.add(idToChange);
         }
     }
@@ -56,16 +56,16 @@ public class ChangeIdSourceReader implements ItemReader<DocumentProcess> {
             Compte compte = null;
             CompteSTEP compteSTEP = null;
             try {
-                compte = service.getDao().getCompte().getCompteByIdDoc(Integer.valueOf(idToChange.Id));
+                compte = service.getDao().getCompte().getCompteByIdDoc(Integer.valueOf(idToChange.id));
                 //compteSTEP = service.getDao().getCompteSTEP().getCompteByIdDoc(Integer.valueOf(idToChange.Id));
             } catch (Exception e) {
-                log.error("Unable to get Compte objet from table, IdDoc : " + idToChange.Id);
+                log.error("Unable to get Compte objet from table, IdDoc : " + idToChange.id);
                 return new DocumentProcess(
-                        service.getDao().getDocument().findById(Integer.parseInt(idToChange.Id)).orElse(null),
+                        service.getDao().getDocument().findById(Integer.parseInt(idToChange.id)).orElse(null),
                         idToChange);
             }
             return new DocumentProcess(
-                    service.getDao().getDocument().findById(Integer.parseInt(idToChange.Id)).orElse(null),
+                    service.getDao().getDocument().findById(Integer.parseInt(idToChange.id)).orElse(null),
                     idToChange,
                     compte
                     //compteSTEP

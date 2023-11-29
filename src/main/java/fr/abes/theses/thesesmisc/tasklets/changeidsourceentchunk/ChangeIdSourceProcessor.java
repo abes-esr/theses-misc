@@ -1,7 +1,6 @@
 package fr.abes.theses.thesesmisc.tasklets.changeidsourceentchunk;
 
 import fr.abes.theses.thesesmisc.model.DocumentProcess;
-import fr.abes.theses.thesesmisc.model.Tef;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
@@ -16,14 +15,14 @@ public class ChangeIdSourceProcessor implements ItemProcessor<DocumentProcess, D
         // Change IdSourceEnt
         try {
             if (!documentProcess.compte.getLogin().contains(newIdSource)){
-                log.info("Id STAR : " + documentProcess.idToChange.Id);
+                log.info("Id STAR : " + documentProcess.idToChange.id);
             }
             //Tef documentTef = new Tef(documentProcess.document.getDoc());
             //documentProcess.edited = documentTef.changeIdSourceStar(oldIdSource, newIdSource);
             //documentProcess.edited = documentTef.changeIdSourceStep(oldIdSource, newIdSource);
             //documentProcess.document.setDoc(documentTef.documentTef.asXML());
         } catch (Exception e){
-            log.error("Error in processor, doc : " + documentProcess.idToChange.Id + "\n" + e);
+            log.error("Error in processor, doc : " + documentProcess.idToChange.id + "\n" + e);
         }
 
         // Change LOGIN,MDP et le NUMIDENT
@@ -36,7 +35,7 @@ public class ChangeIdSourceProcessor implements ItemProcessor<DocumentProcess, D
             //STEP
             //documentProcess.compteSTEP.setLogin(documentProcess.compteSTEP.getLogin().replace(oldIdSource, newIdSource));
         } catch (Exception e) {
-            log.error("Error in processor, compte : " + documentProcess.idToChange.Id + "\n" + e);
+            log.error("Error in processor, compte : " + documentProcess.idToChange.id + "\n" + e);
         }
 
 

@@ -18,7 +18,7 @@ public class DeleteWhiteSpacesBddProcessor implements ItemProcessor<DocumentProc
             documentProcess.compte.setMdp(documentProcess.compte.getMdp().replace(" ", ""));
             documentProcess.compte.setNUMIDENT(documentProcess.compte.getNUMIDENT().replace(" ", ""));
         } catch (Exception e){
-            log.info("Error in processor, compte : " + documentProcess.idToChange.Id);
+            log.info("Error in processor, compte : " + documentProcess.idToChange.id);
         }
 
         //Modif dans le tef
@@ -27,7 +27,7 @@ public class DeleteWhiteSpacesBddProcessor implements ItemProcessor<DocumentProc
             documentProcess.edited = documentTef.deleteWhiteSpaceIdSourceStar();
             documentProcess.document.setDoc(documentTef.documentTef.asXML());
         } catch (Exception e){
-            log.info("Error in processor, doc : " + documentProcess.idToChange.Id);
+            log.info("Error in processor, doc : " + documentProcess.idToChange.id);
         }
 
         return documentProcess;

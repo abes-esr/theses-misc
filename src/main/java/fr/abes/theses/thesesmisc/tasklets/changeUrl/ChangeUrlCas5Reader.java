@@ -41,7 +41,7 @@ public class ChangeUrlCas5Reader implements ItemReader<DocumentProcess>, StepExe
             for (CSVRecord record : records) {
                 IdToChange idToChange = new IdToChange();
 
-                idToChange.Id = record.get("ID");
+                idToChange.id = record.get("ID");
                 idToChange.url = record.get("URL");
 
                 idToChanges.add(idToChange);
@@ -63,7 +63,7 @@ public class ChangeUrlCas5Reader implements ItemReader<DocumentProcess>, StepExe
 
             IdToChange idToChange = idToChanges.get(iIds.getAndIncrement());
             return new DocumentProcess(
-                    service.getDao().getDocument().findById(Integer.parseInt(idToChange.Id)).orElse(null),
+                    service.getDao().getDocument().findById(Integer.parseInt(idToChange.id)).orElse(null),
                     idToChange,
                     idToChange.url
             );

@@ -1,6 +1,5 @@
 package fr.abes.theses.thesesmisc.tasklets.histoireetcritique;
 
-import fr.abes.theses.thesesmisc.entities.Compte;
 import fr.abes.theses.thesesmisc.model.DocumentProcess;
 import fr.abes.theses.thesesmisc.model.IdToChange;
 import fr.abes.theses.thesesmisc.service.impl.DocumentService;
@@ -9,12 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.NonTransientResourceException;
-import org.springframework.batch.item.ParseException;
-import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.stereotype.Component;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -55,9 +50,9 @@ public class HistoireEtCritiqueReader implements ItemReader<DocumentProcess> {
 
             IdToChange idToChange = new IdToChange();
             ;
-            idToChange.Id = String.valueOf(ids.get(iIds.getAndIncrement()));
+            idToChange.id = String.valueOf(ids.get(iIds.getAndIncrement()));
             return new DocumentProcess(
-                    service.getDao().getDocument().findById(Integer.parseInt(idToChange.Id)).orElse(null),
+                    service.getDao().getDocument().findById(Integer.parseInt(idToChange.id)).orElse(null),
                     idToChange
             );
         } else {
