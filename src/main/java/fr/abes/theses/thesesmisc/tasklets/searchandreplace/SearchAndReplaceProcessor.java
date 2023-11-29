@@ -14,7 +14,7 @@ public class SearchAndReplaceProcessor implements ItemProcessor<DocumentProcess,
     @Override
     public DocumentProcess process(DocumentProcess documentProcess) throws Exception {
         if (documentProcess.document != null) {
-            final Pattern pattern = Pattern.compile(documentProcess.searchReplace.search, Pattern.LITERAL);
+            final Pattern pattern = Pattern.compile(documentProcess.searchReplace.search, Pattern.MULTILINE);
             final Matcher matcher = pattern.matcher(documentProcess.document.getDoc());
             if (matcher.find()) {
                 documentProcess.document.setDoc(matcher.replaceAll(documentProcess.searchReplace.replace));
