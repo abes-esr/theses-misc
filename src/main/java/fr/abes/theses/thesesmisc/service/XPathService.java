@@ -84,12 +84,18 @@ public class XPathService {
 
     public static String getAttribut(String xpath, String attribute, Document document) {
         XPath path = DocumentHelper.createXPath(xpath);
+        if (path.selectNodes(document).size() == 0) {
+            return null;
+        }
         Element elem = (Element) path.selectNodes(document).get(0);
         return elem.attribute(attribute).getValue();
     }
 
     public static String getValue(String xpath, Document document) {
         XPath path = DocumentHelper.createXPath(xpath);
+        if (path.selectNodes(document).size() == 0) {
+            return null;
+        }
         Element elem = (Element) path.selectNodes(document).get(0);
         return elem.getText();
     }

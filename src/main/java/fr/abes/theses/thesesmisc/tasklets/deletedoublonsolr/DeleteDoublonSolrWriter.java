@@ -6,8 +6,6 @@ import fr.abes.theses.thesesmisc.service.impl.DocumentService;
 import fr.abes.theses.thesesmisc.utils.Utils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.dom4j.DocumentHelper;
-import org.dom4j.XPath;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,17 +24,25 @@ import java.util.Optional;
 @Component
 public class DeleteDoublonSolrWriter implements ItemWriter<String> {
 
+    @Getter
+    private final DocumentService service;
+
     @Value("${spring.datasource.username}")
     private String username;
 
     @Value("${databaseDelete}")
     private Boolean databaseDelete = false;
 
-    @Getter
-    private final DocumentService service;
+    @Value("${deleteIfNoCinesBlock}")
+    private Boolean deleteIfNoCinesBlock = false;
 
     public DeleteDoublonSolrWriter(DocumentService service) {
         this.service = service;
+    }
+
+    public static org.dom4j.Document parseStringToDOM(String xmlString) throws Exception {
+        SAXReader reader = new SAXReader();
+        return reader.read(new StringReader(xmlString));
     }
 
     @Override
@@ -45,40 +51,32 @@ public class DeleteDoublonSolrWriter implements ItemWriter<String> {
         String urlSolr = Utils.getUrlSolr(username);
         String urlSolrUpdate = urlSolr + "/update";
 
-        for (String id :list) {
+        for (String id : list) {
 
-            StringWriter sw = new StringWriter();
-            postData(new StringReader("<delete><id>" + id + "</id></delete>"), sw, urlSolrUpdate);
-            if (sw.toString().indexOf("<int name=\"status\">0</int>") < 0) {
-                log.error("unexpected response from solr..." + id);
-            }
-            log.info("Unindexed " + id);
+            deleteInSolr(urlSolrUpdate, id);
 
             Optional<Document> document = service.getDao().getDocument().findById(Integer.valueOf(id));
 
             if (document.isPresent()) {
                 org.dom4j.Document doc = parseStringToDOM(document.get().getDoc());
 
-                String indicCines = XPathService.getAttribut("\"/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements/sorties/cines",
+                String indicCines = XPathService.getAttribut("/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements/sorties/cines",
                         "indicCines",
                         doc);
-                if (databaseDelete) {
-                    try {
-                        if (!"OK".equals(indicCines)) {
-                            service.getDao().getDocument().deleteById(Integer.valueOf(id));
-                            log.info("Delete bdd: " + id);
-                        } else {
-                            log.info("No doc in bdd : " + id);
-                        }
-                    } catch (Exception e) {
-                        log.warn("Erreur lors de la suppression de l'id : " + id + " dans la bdd");
+
+                if ("OK".equals(indicCines)) {
+                    log.info("indicCines OK, pas de suppression dans la base : " + id);
+                } else {
+                    if (indicCines == null && deleteIfNoCinesBlock) {
+                        log.info("Pas de block Cines et suppression de la base : " + id);
+                        deleteInBdd(id);
+                    }
+                    if (indicCines != null) {
+                        log.info("Delete bdd: " + id);
+                        deleteInBdd(id);
                     }
                 }
             }
-
-
-
-
         }
         StringWriter sw = new StringWriter();
         postData(new StringReader("<commit/>"), sw, urlSolrUpdate);
@@ -86,9 +84,24 @@ public class DeleteDoublonSolrWriter implements ItemWriter<String> {
 
     }
 
-    public static org.dom4j.Document parseStringToDOM(String xmlString) throws Exception {
-        SAXReader reader = new SAXReader();
-        return reader.read(new StringReader(xmlString));
+    private void deleteInBdd(String id) {
+        try {
+            if (databaseDelete) {
+                service.getDao().getDocument().deleteById(Integer.valueOf(id));
+            }
+        } catch (Exception e) {
+            log.warn("Erreur lors de la suppression de l'id : " + id + " dans la bdd");
+        }
+    }
+
+
+    private void deleteInSolr(String urlSolrUpdate, String id) throws IOException {
+        StringWriter sw = new StringWriter();
+        postData(new StringReader("<delete><id>" + id + "</id></delete>"), sw, urlSolrUpdate);
+        if (sw.toString().indexOf("<int name=\"status\">0</int>") < 0) {
+            log.error("unexpected response from solr..." + id);
+        }
+        log.info("Unindexed " + id);
     }
 
     /**

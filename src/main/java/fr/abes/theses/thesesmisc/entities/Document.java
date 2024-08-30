@@ -26,6 +26,9 @@ public class Document implements Serializable, GenericEntity<Integer> {
 
     @Column(name = "CODEETAB")
     private String codeEtab;
+
+/*    @Column(name = "NNT")
+    private String nnt;*/
 /*    @Column(name = "TEXTE")
     private String texte;
 
@@ -33,7 +36,7 @@ public class Document implements Serializable, GenericEntity<Integer> {
     @Column(name = "ENVOISOLR")
     private Integer envoiSolr;*/
 
-    public Document(Integer idDoc, String doc, String texte, String codeEtab, Integer envoiSolr) {
+    public Document(Integer idDoc, String doc, String codeEtab, Integer envoiSolr) {
         this.idDoc = idDoc;
         this.doc = doc;
         this.codeEtab = codeEtab;

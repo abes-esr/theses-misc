@@ -25,7 +25,12 @@ public class DeleteDoublonSolrReader implements ItemReader<String> {
     public DeleteDoublonSolrReader() throws IOException {
 
         try {
-            Reader in = new FileReader("src/main/resources/DoublonIdsToDelete.csv");
+            Reader in;
+            try {
+                in = new FileReader("src/main/resources/DoublonIdsToDelete.csv");
+            } catch (Exception e) {
+                in = new FileReader("DoublonIdsToDelete.csv");
+            }
             CSVFormat fmt = CSVFormat.EXCEL.withDelimiter(',').withFirstRecordAsHeader();
             Iterable<CSVRecord> records = fmt.parse(in);
 
