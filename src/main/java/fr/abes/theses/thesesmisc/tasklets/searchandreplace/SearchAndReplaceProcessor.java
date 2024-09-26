@@ -1,6 +1,7 @@
 package fr.abes.theses.thesesmisc.tasklets.searchandreplace;
 
 import fr.abes.theses.thesesmisc.model.DocumentProcess;
+import fr.abes.theses.thesesmisc.model.Tef;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
@@ -14,15 +15,15 @@ public class SearchAndReplaceProcessor implements ItemProcessor<DocumentProcess,
     @Override
     public DocumentProcess process(DocumentProcess documentProcess) throws Exception {
         if (documentProcess.document != null) {
-            final Pattern pattern = Pattern.compile(documentProcess.searchReplace.search, Pattern.MULTILINE);
-            final Matcher matcher = pattern.matcher(documentProcess.document.getDoc());
-            if (matcher.find()) {
-                documentProcess.document.setDoc(matcher.replaceAll(documentProcess.searchReplace.replace));
-                documentProcess.edited = true;
-            }
-            else {
-                log.info("SearchAndReplaceProcessor no search found, idDoc : " + documentProcess.document.getIdDoc());
-            }
+
+            Tef documentTef = new Tef(documentProcess.document.getDoc());
+
+            documentProcess.edited = documentTef.searchAndReplace(
+                    documentProcess.searchReplace.id,
+                    documentProcess.searchReplace.search,
+                    documentProcess.searchReplace.replace);
+
+            documentProcess.document.setDoc(documentTef.documentTef.asXML());
         }
         return documentProcess;
     }

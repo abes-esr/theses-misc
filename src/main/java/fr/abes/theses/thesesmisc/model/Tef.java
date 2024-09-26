@@ -15,6 +15,8 @@ import java.io.StringWriter;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Slf4j
@@ -41,16 +43,37 @@ public class Tef {
         checkDocumenTef();
         boolean edited = XPathService.deleteWhiteSpaceIdSourceStep(documentTef);
 
-        if (edited){
+        if (edited) {
             deleteCariageReturn();
         }
         return edited;
     }
+
+    public boolean searchAndReplace(String id, String search, String replace) throws InstantiationException, DocumentException, IOException {
+        checkDocumenTef();
+
+        boolean edited = false;
+
+        final Pattern pattern = Pattern.compile(search, Pattern.MULTILINE);
+        final Matcher matcher = pattern.matcher(documentTef.asXML());
+        if (matcher.find()) {
+            documentTef = DocumentHelper.parseText(matcher.replaceAll(replace));
+            edited = true;
+        } else {
+            log.info("SearchAndReplaceProcessor no search found, idDoc : " + id);
+        }
+
+        if (edited) {
+            deleteCariageReturn();
+        }
+        return edited;
+    }
+
     public boolean deleteWhiteSpaceIdSourceStar() throws InstantiationException, DocumentException, IOException {
         checkDocumenTef();
         boolean edited = XPathService.deleteWhiteSpaceIdSourceStar(documentTef);
 
-        if (edited){
+        if (edited) {
             deleteCariageReturn();
         }
         return edited;
@@ -60,7 +83,7 @@ public class Tef {
         checkDocumenTef();
         boolean edited = XPathService.deleteThesEcritAcademique(documentTef);
 
-        if (edited){
+        if (edited) {
             deleteCariageReturn();
         }
         return edited;
@@ -70,7 +93,7 @@ public class Tef {
         checkDocumenTef();
         boolean edited = XPathService.deleteHistEtCritique(documentTef);
 
-        if (edited){
+        if (edited) {
             deleteCariageReturn();
         }
         return edited;
@@ -78,7 +101,7 @@ public class Tef {
 
     public boolean deleteSubdivisionDeForme() throws IOException, DocumentException {
         List<Node> nodes = XPathService.deleteAllSubdivisionForme(documentTef);
-        if (!nodes.isEmpty()){
+        if (!nodes.isEmpty()) {
             XPathService.addVedetteRameau(documentTef, nodes);
             deleteCariageReturn();
             return true;
@@ -92,7 +115,7 @@ public class Tef {
         checkDocumenTef();
         boolean edited = XPathService.setUrlEtabDiffuseurCas5(documentTef, url);
 
-        if (edited){
+        if (edited) {
             deleteCariageReturn();
         }
         return edited;
@@ -102,7 +125,7 @@ public class Tef {
         checkDocumenTef();
         boolean edited = XPathService.setUrlEtabDiffuseurCas1(documentTef, url);
 
-        if (edited){
+        if (edited) {
             deleteCariageReturn();
         }
         return edited;
@@ -111,7 +134,7 @@ public class Tef {
 
     private void deleteCariageReturn() throws IOException, DocumentException {
         StringWriter sw = new StringWriter();
-        XMLWriter writer = new XMLWriter(sw, OutputFormat.createPrettyPrint( ));
+        XMLWriter writer = new XMLWriter(sw, OutputFormat.createPrettyPrint());
         writer.write(documentTef);
 
         documentTef = DocumentHelper.parseText(sw.toString());
@@ -143,6 +166,7 @@ public class Tef {
         XPathService.changeIdSourceStar(documentTef, odlIdSource, newIdSource);
         return true;
     }
+
     public boolean changeIdSourceStep(String odlIdSource, String newIdSource) {
         XPathService.changeIdSourceStep(documentTef, odlIdSource, newIdSource);
         return true;
