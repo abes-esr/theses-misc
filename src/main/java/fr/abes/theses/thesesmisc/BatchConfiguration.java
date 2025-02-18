@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersIncrementer;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.annotation.BeforeRead;
-import org.springframework.batch.core.configuration.StepRegistry;
 import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -39,7 +37,8 @@ public class BatchConfiguration {
     @Value("${chunkSize}")
     private Integer chunkSize;
 
-    public BatchConfiguration(JobBuilderFactory jobs, StepBuilderFactory steps, DataSource thesesDatasource) {
+    public BatchConfiguration(JobBuilderFactory jobs, StepBuilderFactory steps,
+                              @Qualifier("thesesDatasource") DataSource thesesDatasource) {
         this.jobs = jobs;
         this.steps = steps;
         this.thesesDatasource = thesesDatasource;
@@ -173,6 +172,24 @@ public class BatchConfiguration {
                             @Qualifier("normaliseNfcProcessor") ItemProcessor processor,
                             @Qualifier("tefWriter") ItemWriter writer) {
         return jobs.get("normaliseNfc").incrementer(incrementer())
+                .start(genericStep(reader, processor, writer))
+                .build();
+    }
+
+    @Bean
+    public Job fileLogSyncBddToSolr(@Qualifier("fileLogSyncBddToSolrReader") ItemReader reader,
+                            @Qualifier("syncBddToSolrProcessor") ItemProcessor processor,
+                            @Qualifier("syncBddToSolrWriter") ItemWriter writer) {
+        return jobs.get("fileLogSyncBddToSolr").incrementer(incrementer())
+                .start(genericStep(reader, processor, writer))
+                .build();
+    }
+
+    @Bean
+    public Job SyncBddToSolr(@Qualifier("syncBddToSolrReader") ItemReader reader,
+                            @Qualifier("syncBddToSolrProcessor") ItemProcessor processor,
+                            @Qualifier("syncBddToSolrWriter") ItemWriter writer) {
+        return jobs.get("syncBddToSolr").incrementer(incrementer())
                 .start(genericStep(reader, processor, writer))
                 .build();
     }

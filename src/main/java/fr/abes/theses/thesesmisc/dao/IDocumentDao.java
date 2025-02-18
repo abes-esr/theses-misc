@@ -12,4 +12,14 @@ import java.util.List;
 public interface IDocumentDao extends JpaRepository<Document, Integer> {
         Page<Document> findAll(Pageable pageable);
 
+        @Query(value = "select d.idDoc from Document d order by d.idDoc desc")
+        Page<Integer> findAllById(Pageable pageable);
+
+        @Query(value = "select d.idDoc from Document d where d.codeEtab = ?1 order by d.idDoc desc")
+        Page<Integer> findAllByCodeEtab(String codeEtab, Pageable pageable);
+
+
+
+        boolean existsById (Integer idDoc);
+
 }
