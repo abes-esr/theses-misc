@@ -24,6 +24,9 @@ public class SyncBddToSolrWriter implements ItemWriter<DocumentProcess> {
     @Value("${spring.datasource.username}")
     private String username;
 
+    @Value("${spring.datasource.url}")
+    private String datasourceUrl;
+
     @Override
     public void write(List<? extends DocumentProcess> list) throws Exception {
 
@@ -35,7 +38,7 @@ public class SyncBddToSolrWriter implements ItemWriter<DocumentProcess> {
                             doc.document.getIdDoc(),
                             doc.document.getDoc(),
                             "src/main/resources/xls/tef2solr.xsl",
-                            Utils.getUrlSolr(username) + "/update"
+                            Utils.getUrlSolr(datasourceUrl, username) + "/update"
                     );
 
                 } else {
@@ -44,7 +47,7 @@ public class SyncBddToSolrWriter implements ItemWriter<DocumentProcess> {
                             doc.document.getIdDoc(),
                             doc.document.getDoc(),
                             "src/main/resources/xls/sujets2solr.xsl",
-                            Utils.getUrlSolr(username) + "/update"
+                            Utils.getUrlSolr(datasourceUrl, username) + "/update"
                     );
                 }
             } else {

@@ -194,6 +194,15 @@ public class BatchConfiguration {
                 .build();
     }
 
+    @Bean
+    public Job MajAbesDiffuseur(@Qualifier("majAbesDiffuseurReader") ItemReader reader,
+                                @Qualifier("majAbesDiffuseurProcessor") ItemProcessor processor,
+                                @Qualifier("tefWriter") ItemWriter writer) {
+        return jobs.get("majAbesDiffuseur").incrementer(incrementer())
+                .start(genericStep(reader, processor, writer))
+                .build();
+    }
+
     private Step genericStep(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
         return steps.get("genericStep").chunk(chunkSize)
                 .reader(reader)

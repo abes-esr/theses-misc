@@ -27,17 +27,21 @@ public class FileLogSyncBddToSolrReader implements ItemReader<DocumentProcess> {
     public FileLogSyncBddToSolrReader(DocumentService service) throws IOException {
 
         this.service = service;
+        try {
 
-        final String string = Files.readString(Path.of("src/main/resources/indexationsolr-C2.log"), StandardCharsets.UTF_8);
+            final String string = Files.readString(Path.of("src/main/resources/indexationsolr-C2.log"), StandardCharsets.UTF_8);
 
-        final String regex = "contexte = star.{30,150}iddoc = (\\d+).{300,350}http:\\/\\/denim\\.v102\\.abes\\.fr:8080\\/solrSuj";
-        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE | Pattern.DOTALL);
-        final Matcher matcher = pattern.matcher(string);
+            final String regex = "contexte = star.{30,150}iddoc = (\\d+).{300,350}http:\\/\\/denim\\.v102\\.abes\\.fr:8080\\/solrSuj";
+            final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE | Pattern.DOTALL);
+            final Matcher matcher = pattern.matcher(string);
 
-        while (matcher.find()) {
-            for (int i = 1; i <= matcher.groupCount(); i++) {
-                iddocList.add(matcher.group(i));
+            while (matcher.find()) {
+                for (int i = 1; i <= matcher.groupCount(); i++) {
+                    iddocList.add(matcher.group(i));
+                }
             }
+        } catch (Exception e) {
+            log.error("Erreur dans le constructeur" + e);
         }
     }
 

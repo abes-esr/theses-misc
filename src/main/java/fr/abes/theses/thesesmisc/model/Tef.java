@@ -171,4 +171,33 @@ public class Tef {
         XPathService.changeIdSourceStep(documentTef, odlIdSource, newIdSource);
         return true;
     }
+
+    public boolean majAbesDiffuseurOui(String urlAbesDiffuseur) throws Exception {
+
+        String cas = XPathService.getAttribut("/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements", "scenario", documentTef);
+
+        switch (cas) {
+            case "cas1" :
+                String xpath1 = "//mets:dmdSec[ends-with(@ID, 'VERSION_COMPLETE.DESCRIPTION.EDITION_ARCHIVAGE')]//tef:edition";
+                XPathService.majAbesDiffuseurAjoutUriCasN(urlAbesDiffuseur, xpath1, documentTef);
+                break;
+            case "cas2" :
+                String xpath2 = "//mets:dmdSec[ends-with(@ID, 'VERSION_COMPLETE.DESCRIPTION.EDITION_1')]//tef:edition";
+                XPathService.majAbesDiffuseurAjoutUriCasN(urlAbesDiffuseur, xpath2, documentTef);
+                break;
+            case "cas3" :
+                String xpath3 = "//mets:dmdSec[ends-with(@ID, 'VERSION_INCOMPLETE_1.DESCRIPTION.EDITION_1')]//tef:edition";
+                XPathService.majAbesDiffuseurAjoutUriCasN(urlAbesDiffuseur, xpath3, documentTef);
+                break;
+            case "cas4" :
+                String xpath4 = "//mets:dmdSec[ends-with(@ID, 'VERSION_INCOMPLETE_1.DESCRIPTION.EDITION_1')]//tef:edition";
+                XPathService.majAbesDiffuseurAjoutUriCasN(urlAbesDiffuseur, xpath4, documentTef);
+                break;
+            default :
+                throw new Exception("Cas non valide");
+        }
+
+        XPathService.majAbesDiffuseurOui(urlAbesDiffuseur, documentTef);
+        return true;
+    }
 }

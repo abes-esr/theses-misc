@@ -42,6 +42,9 @@ public class XPathService {
     public static final String STEP_DATE_ABANDON = "/mets:mets/mets:amdSec/mets:techMD/mets:mdWrap/mets:xmlData/tef:thesisAdmin/suj:vie/suj:dateAbandon";
     public static final String STEP_SUJ_VIE = "/mets:mets/mets:amdSec/mets:techMD/mets:mdWrap/mets:xmlData/tef:thesisAdmin/suj:vie";
 
+    public static final String STAR_ETAB_DIFFUSEUR = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements/sorties/diffusion/abesDiffuseur";
+    //                                               "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements/sorties/diffusion/abesDiffuseur/@abesDiffuseurPolEtablissement
+
 
     public static final List<String> typeBalises = new ArrayList<>(
             Arrays.asList("tef:vedetteRameauPersonne",
@@ -308,4 +311,36 @@ public class XPathService {
 
         return true;
     }
+
+    public static boolean majAbesDiffuseurOui(String urlAbesDiffuseur, Document documentTef) {
+        XPathService.setAttribut(STAR_ETAB_DIFFUSEUR, "abesDiffuseurPolEtablissement", "oui", documentTef);
+        XPathService.setAttribut(STAR_ETAB_DIFFUSEUR, "urlAbesDiffuseur", urlAbesDiffuseur, documentTef);
+        return true;
+    }
+
+    public static boolean majAbesDiffuseurAjoutUriCasN(String urlAbesDiffuseur, String xpath, Document documentTef) {
+
+        // Récupérer les noeuds correspondant au xpath
+        List<Node> nodes = documentTef.selectNodes(xpath);
+
+        // Vérifier si l'URL existe déjà
+        for (Node node : ((Element) documentTef.selectNodes(xpath).get(0)).elements()) {
+            String urlExistante = node.getText();
+            if (urlAbesDiffuseur.equals(urlExistante)) {
+                // L'URL est déjà présente, on ne l'ajoute pas
+                log.info("Url déjà présente : " + urlAbesDiffuseur);
+                return false;
+            }
+        }
+
+
+        BaseElement node = new BaseElement("dc:identifier");
+        node.addAttribute("xsi:type", "dcterms:URI");
+        node.setText(urlAbesDiffuseur);
+
+        addElement(xpath, node, documentTef);
+
+        return true;
+    }
+
 }
