@@ -16,6 +16,8 @@ import java.util.List;
 @Slf4j
 public class XPathService {
 
+    public static final String METS_HDR = "/mets:mets/mets:metsHdr";
+
     public static final String STAR_GESTION = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion";
     public static final String STAR_GEST_TRTS_SORTIES_SUDOC = STAR_GESTION + "/traitements/sorties/sudoc";
     public static final String STEP_GESTION = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/step_gestion";

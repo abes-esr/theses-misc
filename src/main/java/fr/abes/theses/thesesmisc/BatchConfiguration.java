@@ -203,6 +203,15 @@ public class BatchConfiguration {
                 .build();
     }
 
+    @Bean
+    public Job CopyProdToTest(@Qualifier("copyProdToTestReader") ItemReader reader,
+                                @Qualifier("copyProdToTestProcessor") ItemProcessor processor,
+                                @Qualifier("tefWriter") ItemWriter writer) {
+        return jobs.get("copyProdToTest").incrementer(incrementer())
+                .start(genericStep(reader, processor, writer))
+                .build();
+    }
+
     private Step genericStep(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
         return steps.get("genericStep").chunk(chunkSize)
                 .reader(reader)

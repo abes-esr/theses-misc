@@ -59,7 +59,7 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
                     // Définition des paramètres IN
                     cs.setInt(1, documentProcess.document.getIdDoc());        // p_iddoc
                     cs.setString(2, "add");     // p_action
-                    cs.setString(3, "star");    // p_origin
+                    cs.setString(3, username.toLowerCase());    // p_origin
 
                     // Exécution
                     cs.execute();

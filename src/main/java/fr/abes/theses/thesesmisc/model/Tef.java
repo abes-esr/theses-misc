@@ -200,4 +200,18 @@ public class Tef {
         XPathService.majAbesDiffuseurOui(urlAbesDiffuseur, documentTef);
         return true;
     }
+
+    public String getIdInTEF() {
+        String id = XPathService.getAttribut(XPathService.METS_HDR, "ID", documentTef);
+        Pattern pattern = Pattern.compile("_(\\d+)\\.");
+        Matcher matcher = pattern.matcher(id);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            return null;
+        }
+
+    }
+
 }
