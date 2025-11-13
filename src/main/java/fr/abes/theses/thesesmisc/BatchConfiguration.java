@@ -9,6 +9,8 @@ import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -205,10 +207,17 @@ public class BatchConfiguration {
 
     @Bean
     public Job CopyProdToTest(@Qualifier("copyProdToTestReader") ItemReader reader,
-                                @Qualifier("copyProdToTestProcessor") ItemProcessor processor,
-                                @Qualifier("tefWriter") ItemWriter writer) {
+                              @Qualifier("copyProdToTestProcessor") ItemProcessor processor,
+                              @Qualifier("tefWriter") ItemWriter writer,
+                              @Qualifier("copyApplisProdToTestTasklet") Tasklet copyApplisProdToTestTasklet) {
+
+        Step copyApplisStep = steps.get("copyApplisProdToTestStep")
+                .tasklet(copyApplisProdToTestTasklet)
+                .build();
+
         return jobs.get("copyProdToTest").incrementer(incrementer())
-                .start(genericStep(reader, processor, writer))
+                .start(copyApplisStep)
+                .next(genericStep(reader, processor, writer))
                 .build();
     }
 
