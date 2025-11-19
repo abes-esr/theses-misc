@@ -4,13 +4,17 @@ import fr.abes.theses.thesesmisc.model.DocumentProcess;
 import fr.abes.theses.thesesmisc.model.Tef;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 
 @Component
 @Slf4j
-public class CopyProdToTestProcessor  implements ItemProcessor<DocumentProcess, DocumentProcess> {
+public class CopyProdToTestProcessor implements ItemProcessor<DocumentProcess, DocumentProcess> {
+
+    @Value("${copyProdToTest.fileAppli}")
+    private boolean copyFileAppli;
 
     String starStock = "/applis/portail/theses/STARSTOCK/";
 
@@ -20,25 +24,23 @@ public class CopyProdToTestProcessor  implements ItemProcessor<DocumentProcess, 
         Tef documentTef = new Tef(documentProcess.document.getDoc());
         String oldId = documentTef.getIdInTEF();
 
-        if (renameFolderInApplis(oldId, String.valueOf(documentProcess.document.getIdDoc()), documentProcess.document.getCodeEtab())) {
-            documentProcess.edited = documentTef.searchAndReplace(
-                    String.valueOf(documentProcess.document.getIdDoc()),
-                    oldId,
-                    String.valueOf(documentProcess.document.getIdDoc()));
+        documentProcess.edited = documentTef.searchAndReplace(
+                String.valueOf(documentProcess.document.getIdDoc()),
+                oldId,
+                String.valueOf(documentProcess.document.getIdDoc()));
 
-            documentProcess.document.setDoc(documentTef.documentTef.asXML());
-        } else {
-            log.info("Iddoc non traité : {} oldIddoc: {}", documentProcess.document.getIdDoc(), oldId);
+        documentProcess.document.setDoc(documentTef.documentTef.asXML());
+
+        if (copyFileAppli) {
+            renameFolderInApplis(oldId, String.valueOf(documentProcess.document.getIdDoc()), documentProcess.document.getCodeEtab());
         }
-
-
 
         return documentProcess;
     }
 
     private boolean renameFolderInApplis(String oldId, String newId, String codeEtab) {
-        String oldPath = starStock + codeEtab + oldId;
-        String newPath = starStock + codeEtab + newId;
+        String oldPath = starStock + codeEtab + "/THESE_" + oldId;
+        String newPath = starStock + codeEtab + "/THESE_" + newId;
 
         File oldFile = new File(oldPath);
         File newFile = new File(newPath);
