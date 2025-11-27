@@ -209,14 +209,19 @@ public class BatchConfiguration {
     public Job CopyProdToTest(@Qualifier("copyProdToTestReader") ItemReader reader,
                               @Qualifier("copyProdToTestProcessor") ItemProcessor processor,
                               @Qualifier("tefWriter") ItemWriter writer,
-                              @Qualifier("copyApplisProdToTestTasklet") Tasklet copyApplisProdToTestTasklet) {
+                              @Qualifier("copyApplisProdToTestTasklet") Tasklet copyApplisProdToTestTasklet,
+                              @Qualifier("copyBddProdToTestTasklet") Tasklet copyBddProdToTestTasklet) {
 
         Step copyApplisStep = steps.get("copyApplisProdToTestStep")
                 .tasklet(copyApplisProdToTestTasklet)
                 .build();
+        Step copyBddStep = steps.get("CopyBddProdToTestTasklet")
+                .tasklet(copyBddProdToTestTasklet)
+                .build();
 
         return jobs.get("copyProdToTest").incrementer(incrementer())
                 .start(copyApplisStep)
+                .next(copyBddStep)
                 .next(genericStep(reader, processor, writer))
                 .build();
     }

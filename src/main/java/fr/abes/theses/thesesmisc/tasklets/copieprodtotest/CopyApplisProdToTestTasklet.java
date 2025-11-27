@@ -8,8 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.*;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
@@ -25,11 +29,27 @@ public class CopyApplisProdToTestTasklet implements Tasklet {
             throw new IllegalArgumentException("Code Etab non valide : " + codeEtab);
         }
 
+        /*
+        2.5G    THESE_158692
+3.1G    UNIP/THESE_170401
+3.3G    UNIP/THESE_188332
+3.4G    UNIP/THESE_122971
+3.8G    UNIP/THESE_164135
+        */
+
         String localPath = "/applis/theses/STARSTOCK/" + codeEtab;
         String remotePath = "pivoine-prod.v106.abes.fr:/applis/portail/theses/STARSTOCK/" + codeEtab;
 
+        if (localPath.contains("portail")) {
+            throw new IllegalArgumentException("LocalPath non valide : " + localPath);
+        }
+
         runCommand("rm", "-rf", localPath);
-        runCommand("rsync", "-av", remotePath + "/", localPath + "/");
+        runCommand("rsync", "-a",
+                "--max-size=1m",
+                "--exclude=*.pdf",
+                "--exclude=*.zip",
+                remotePath + "/", localPath + "/");
 
         return RepeatStatus.FINISHED;
     }

@@ -13,7 +13,6 @@ import org.dom4j.io.XMLWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -202,7 +201,7 @@ public class Tef {
     }
 
     public String getIdInTEF() {
-        String id = XPathService.getAttribut(XPathService.METS_HDR, "ID", documentTef);
+        String id = XPathService.getAttribut(XPathService.METS_DMDSEC, "ID", documentTef);
         Pattern pattern = Pattern.compile("_(\\d+)\\.");
         Matcher matcher = pattern.matcher(id);
 

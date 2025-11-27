@@ -8,6 +8,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -16,7 +24,10 @@ public class CopyProdToTestProcessor implements ItemProcessor<DocumentProcess, D
     @Value("${copyProdToTest.fileAppli}")
     private boolean copyFileAppli;
 
-    String starStock = "/applis/portail/theses/STARSTOCK/";
+    @Value("${spring.datasource.username}")
+    private String username;
+
+    String starStock = "/applis/theses/STARSTOCK/";
 
     @Override
     public DocumentProcess process(DocumentProcess documentProcess) throws Exception {
@@ -31,11 +42,34 @@ public class CopyProdToTestProcessor implements ItemProcessor<DocumentProcess, D
 
         documentProcess.document.setDoc(documentTef.documentTef.asXML());
 
-        if (copyFileAppli) {
+        if (copyFileAppli && "STAR".equals(username)) {
             renameFolderInApplis(oldId, String.valueOf(documentProcess.document.getIdDoc()), documentProcess.document.getCodeEtab());
+            ajoutePdfFactice(String.valueOf(documentProcess.document.getIdDoc()), documentProcess.document.getCodeEtab());
         }
 
         return documentProcess;
+    }
+
+    private void ajoutePdfFactice(String iddoc, String codeEtab) {
+        String path = starStock + codeEtab + "/THESE_" + iddoc;
+        Path root = Path.of(path);
+
+        try {
+            List<Path> targetFolders = findDocumentLevel2Folders(root);
+
+            if (targetFolders.isEmpty()) {
+                log.warn("Aucun dossier document/*/*/ trouvé pour " + path);
+                return;
+            }
+
+            for (Path folder : targetFolders) {
+                Path pdfDest = folder.resolve("PDF_" + iddoc + ".pdf");
+                copyResource("/TESTarchivageCines.pdf", pdfDest);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lors de l'ajout PDF factice pour " + path, e);
+        }
     }
 
     private boolean renameFolderInApplis(String oldId, String newId, String codeEtab) {
@@ -51,5 +85,30 @@ public class CopyProdToTestProcessor implements ItemProcessor<DocumentProcess, D
         }
 
         return oldFile.renameTo(newFile);
+    }
+
+    private void copyResource(String resourcePath, Path destination) throws IOException {
+        try (InputStream in = getClass().getResourceAsStream(resourcePath)) {
+            if (in == null) {
+                throw new FileNotFoundException("Ressource non trouvée : " + resourcePath);
+            }
+            //Files.createDirectories(destination.getParent());
+            Files.copy(in, destination, StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+
+    private List<Path> findDocumentLevel2Folders(Path localPath) throws IOException {
+        Path documentRoot = localPath.resolve("document");
+
+        if (!Files.exists(documentRoot)) {
+            return List.of();
+        }
+
+        try (var stream = Files.walk(documentRoot, 2)) {
+            return stream
+                    .filter(Files::isDirectory)
+                    .filter(path -> path.getNameCount() == documentRoot.getNameCount() + 2)
+                    .collect(Collectors.toList());
+        }
     }
 }

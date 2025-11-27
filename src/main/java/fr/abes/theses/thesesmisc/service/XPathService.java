@@ -4,19 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.dom4j.*;
 import org.dom4j.tree.BaseElement;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
 public class XPathService {
 
-    public static final String METS_HDR = "/mets:mets/mets:metsHdr";
+    public static final String METS_DMDSEC = "/mets:mets/mets:dmdSec";
 
     public static final String STAR_GESTION = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion";
     public static final String STAR_GEST_TRTS_SORTIES_SUDOC = STAR_GESTION + "/traitements/sorties/sudoc";
