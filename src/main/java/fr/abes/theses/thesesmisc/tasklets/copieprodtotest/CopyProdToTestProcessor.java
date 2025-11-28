@@ -52,6 +52,11 @@ public class CopyProdToTestProcessor implements ItemProcessor<DocumentProcess, D
 
     private void ajoutePdfFactice(String iddoc, String codeEtab) {
         String path = starStock + codeEtab + "/THESE_" + iddoc;
+
+        if (path.contains("portail")) {
+            throw new IllegalArgumentException("LocalPath non valide : " + path);
+        }
+
         Path root = Path.of(path);
 
         try {

@@ -1,5 +1,6 @@
 package fr.abes.theses.thesesmisc.tasklets.copieprodtotest;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -7,15 +8,9 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.*;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+@Slf4j
 @Component
 public class CopyApplisProdToTestTasklet implements Tasklet {
 
@@ -44,7 +39,10 @@ public class CopyApplisProdToTestTasklet implements Tasklet {
             throw new IllegalArgumentException("LocalPath non valide : " + localPath);
         }
 
+        log.info("rm de " + localPath );
         runCommand("rm", "-rf", localPath);
+
+        log.info("rsync de " + remotePath + " vers " + localPath );
         runCommand("rsync", "-a",
                 "--max-size=1m",
                 "--exclude=*.pdf",
