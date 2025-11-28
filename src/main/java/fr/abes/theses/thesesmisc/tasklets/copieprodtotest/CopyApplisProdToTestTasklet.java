@@ -17,6 +17,9 @@ public class CopyApplisProdToTestTasklet implements Tasklet {
     @Value("${codeEtab}")
     private String codeEtab;
 
+    @Value("${spring.datasource.username}")
+    private String username;
+
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 
@@ -39,15 +42,20 @@ public class CopyApplisProdToTestTasklet implements Tasklet {
             throw new IllegalArgumentException("LocalPath non valide : " + localPath);
         }
 
-        log.info("rm de " + localPath );
-        runCommand("rm", "-rf", localPath);
+        if (username.contains("STAR")) {
+            log.info("rm de " + localPath );
+            runCommand("rm", "-rf", localPath);
 
-        log.info("rsync de " + remotePath + " vers " + localPath );
-        runCommand("rsync", "-a",
-                "--max-size=1m",
-                "--exclude=*.pdf",
-                "--exclude=*.zip",
-                remotePath + "/", localPath + "/");
+            log.info("rsync de " + remotePath + " vers " + localPath );
+            runCommand("rsync", "-a",
+                    "--max-size=1m",
+                    "--exclude=*.pdf",
+                    "--exclude=*.zip",
+                    remotePath + "/", localPath + "/");
+        } else {
+            log.info("Non réalisé pour " + username + ", mais uniquement pour STAR");
+        }
+
 
         return RepeatStatus.FINISHED;
     }
