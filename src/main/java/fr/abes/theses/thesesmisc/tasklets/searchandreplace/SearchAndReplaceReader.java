@@ -71,7 +71,7 @@ public class SearchAndReplaceReader implements ItemReader<DocumentProcess>, Step
             } catch (Exception e) {
                 in = new FileReader("searchReplace.csv");
             }
-            final Iterable<CSVRecord> records = CSVFormat.DEFAULT.withDelimiter(',').withFirstRecordAsHeader().parse(in);
+            final Iterable<CSVRecord> records = CSVFormat.DEFAULT.withDelimiter('\t').withFirstRecordAsHeader().parse(in);
             for (final CSVRecord record : records) {
                 this.searchReplaceList.add(new SearchReplace(record.get("ID"), record.get("search"), record.get("replace")));
             }
