@@ -14,15 +14,18 @@ import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.retry.annotation.EnableRetry;
+import fr.abes.theses.thesesmisc.utils.ScissionRameauList;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.io.IOException;
 
 @Slf4j
 @Configuration
@@ -229,4 +232,32 @@ public class BatchConfiguration {
                 .build();
     }
 
+    @Bean
+    public Step loadScissionsStep() {
+        return steps.get("loadScissionsStep")
+                .tasklet((contribution, chunkContext) -> {
+                    try {
+                        ScissionRameauList.loadScissionRameauList();  // Charge les données du CSV
+                        log.info("Chargement de la liste de scissions terminé.");
+                    } catch (IOException e) {
+                        log.error("Erreur lors du chargement de la liste des scissions.", e);
+                        throw new RuntimeException("Erreur lors du chargement de la liste des scissions.", e);
+                    }
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
+    }
+
+    @Bean
+    public Job scissionRameauJob(
+            @Qualifier("diviserVedetteRameauReader") ItemReader reader,
+            @Qualifier("diviserVedetteRameauProcessor") ItemProcessor processor,
+            @Qualifier("tefWriter") ItemWriter writer) {
+
+        return jobs.get("scissionRameauJob")
+                .incrementer(incrementer())
+                .start(loadScissionsStep())  // Step de chargement du tableau des scissions
+                .next(genericStep(reader, processor, writer))  // Step de traitement
+                .build();
+    }
 }

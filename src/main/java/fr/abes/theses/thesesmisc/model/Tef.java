@@ -2,6 +2,7 @@ package fr.abes.theses.thesesmisc.model;
 
 
 import fr.abes.theses.thesesmisc.service.XPathService;
+import fr.abes.theses.thesesmisc.utils.ScissionRameauEntry;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -108,7 +109,17 @@ public class Tef {
         } else {
             return false;
         }
+    }
 
+    public boolean replaceSubdivisionNomCommun() throws IOException, DocumentException {
+        List<Node> nodes = XPathService.deleteAllSubdivisionForme(documentTef);
+        if (!nodes.isEmpty()) {
+            XPathService.addVedetteRameau(documentTef, nodes);
+            deleteCariageReturn();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean changeUrlCas5(String url) throws DocumentException, IOException, InstantiationException {
@@ -214,4 +225,8 @@ public class Tef {
 
     }
 
+    public boolean searchAndReplaceScissionRameau(ScissionRameauEntry entry) {
+        // replaceSubdivisionNomCommun
+        return false;
+    }
 }
