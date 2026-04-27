@@ -4,17 +4,13 @@ package fr.abes.theses.thesesmisc.model;
 import fr.abes.theses.thesesmisc.service.XPathService;
 import fr.abes.theses.thesesmisc.utils.ScissionRameauEntry;
 import lombok.extern.slf4j.Slf4j;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Node;
+import org.dom4j.*;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -111,16 +107,6 @@ public class Tef {
         }
     }
 
-    public boolean replaceSubdivisionNomCommun() throws IOException, DocumentException {
-        List<Node> nodes = XPathService.deleteAllSubdivisionForme(documentTef);
-        if (!nodes.isEmpty()) {
-            XPathService.addVedetteRameau(documentTef, nodes);
-            deleteCariageReturn();
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     public boolean changeUrlCas5(String url) throws DocumentException, IOException, InstantiationException {
         checkDocumenTef();
@@ -225,8 +211,13 @@ public class Tef {
 
     }
 
+    /**
+     * Recherche la liste de tous les sous-noeuds de <vedetteRameauNomCommun> correspondant à entry
+     * et les remplace par les valeurs définies comme "new" dans entry
+     * @param entry une ligne du fichier csv listant les sujets rameau à scinder
+     */
     public boolean searchAndReplaceScissionRameau(ScissionRameauEntry entry) {
-        // replaceSubdivisionNomCommun
-        return false;
+        List<Node> resultNodes = XPathService.getNodesByParentNodeNameAndAttributeValue(documentTef, "autoriteExterne", entry.getOldPpn(), "//tef:vedetteRameauNomCommun");
+        return XPathService.replaceVedettesRameau(resultNodes, entry);
     }
 }

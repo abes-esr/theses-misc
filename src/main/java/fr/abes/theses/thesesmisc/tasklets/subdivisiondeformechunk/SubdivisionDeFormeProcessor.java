@@ -10,6 +10,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Prend un tef et vérifie pour chaque ligne de ScissionRameauList si le sujet Rameau concerné par une scission est présent
+ * Et le remplace par les deux sujets de sa subdivision
+ */
 @Slf4j
 @Component
 public class SubdivisionDeFormeProcessor implements ItemProcessor<DocumentProcess, DocumentProcess> {

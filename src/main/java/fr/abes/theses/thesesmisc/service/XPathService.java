@@ -1,16 +1,14 @@
 package fr.abes.theses.thesesmisc.service;
 
+import fr.abes.theses.thesesmisc.utils.ScissionRameauEntry;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.*;
 import org.dom4j.tree.BaseElement;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -345,4 +343,109 @@ public class XPathService {
         return true;
     }
 
+
+    /**
+     * Récupère tous les sous-nœuds des balises données par le xpath
+     * dont l'attribut attribut a une valeur attributeValue.
+     *
+     * @param documentTef Le tef
+     * @param attributeValue Le nom de l'attribut à rechercher
+     * @param attributeValue La valeur de l'attribut à rechercher
+     * @param xpath Le xpath pour sélectionner les noeuds
+     * @return Une liste de nœuds correspondant aux critères.
+     */
+    public static List<Node> getNodesByParentNodeNameAndAttributeValue(Document documentTef, String attribut, String attributeValue, String xpath) {
+        List<Node> resultNodes = new ArrayList<>();
+
+        XPath xpathVedette = DocumentHelper.createXPath(xpath);
+//        xpathVedette.setNamespaceURIs(Map.of("tef", "http://namespace-uri"));
+
+        List<Node> vedetteNodes = xpathVedette.selectNodes(documentTef);
+
+        // Pour chaque balise, chercher ses sous-nœuds
+        for (Node vedetteNode : vedetteNodes) {
+            if (vedetteNode instanceof Element) {
+                Element vedetteElement = (Element) vedetteNode;
+                XPath xpathSubNodes = DocumentHelper.createXPath(
+                        "./*[@" + attribut + "='" + attributeValue + "']"
+                );
+
+                // Sélectionner les sous-nœuds correspondants
+                List<Node> subNodes = xpathSubNodes.selectNodes(vedetteElement);
+                resultNodes.addAll(subNodes);
+            }
+        }
+
+        return resultNodes;
+    }
+
+    public static boolean replaceVedettesRameau(List<Node> vedetteNodes, ScissionRameauEntry entry) {
+        boolean isModified = false;
+        for (Node node: vedetteNodes) {
+            try {
+                Node newNode1;
+                Node newNode2;
+                if (node.getName().equals("tef:elementdEntree")) {
+                    // Cas 1
+                    newNode1 = createNewElementWithEntry("tef:elementdEntree", entry.getNewPpn1(), entry.getNewLabel1());
+                    newNode2 = createNewElementWithEntry("tef:subdivision", entry.getNewPpn2(), entry.getNewLabel2());
+                } else if (node.getName().equals("tef:subdivision")) {
+                    // Cas 2
+                    newNode1 = createNewElementWithEntry("tef:subdivision", entry.getNewPpn1(), entry.getNewLabel1());
+                    newNode2 = createNewElementWithEntry("tef:subdivision", entry.getNewPpn2(), entry.getNewLabel2());
+                } else {
+                    throw new Exception("Pas d'élement <tef:elementdEntree> ou <tef:subdivision> trouvé pour l'autorité rameau " + entry.getOldPpn());
+                }
+
+                replaceNodeWithTwoNewNodes(node, newNode1, newNode2);
+                isModified = true;
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        }
+
+        return isModified;
+    }
+
+    /**
+     * Crée un nouveau noeud de type spécifié avec les valeurs de ScissionRameauEntry.
+     *
+     * @param nodeType Le type du nouveau nœud (ex: "tef:elementdEntree").
+     * @param newPpn La nouvelle valeur PPN.
+     * @param newLabel La nouvelle valeur du libellé.
+     * @return Le nouveau nœud créé.
+     */
+    private static Node createNewElementWithEntry(String nodeType, String newPpn, String newLabel) {
+        Element newElement = DocumentHelper.createElement(nodeType);
+
+        newElement.addAttribute("autoriteExterne", newPpn);
+        newElement.addAttribute("autoriteSource", "Sudoc");
+        newElement.setText(newLabel);
+
+        if ("tef:subdivision".equals(nodeType)) {
+            newElement.addAttribute("type", "subdivisionDeSujet");
+        }
+
+        return newElement;
+    }
+
+    /**
+     * Remplace un nœud par deux nouveaux noeuds au même endroit et au même niveau.
+     * @param nodeToReplace Le noeud à supprimer.
+     * @param newNode1 Le premier nouveau noeud.
+     * @param newNode2 Le deuxième nouveau noeud.
+     */
+    public static void replaceNodeWithTwoNewNodes(Node nodeToReplace, Node newNode1, Node newNode2) {
+        Element parent = nodeToReplace.getParent();
+
+        if (parent == null) {
+            throw new IllegalArgumentException("Le noeud à remplacer n'a pas de parent.");
+        }
+
+        int index = parent.indexOf(nodeToReplace);
+
+        nodeToReplace.detach();
+        parent.content().add(index, newNode1);
+        parent.content().add(index + 1, newNode2);
+    }
 }
