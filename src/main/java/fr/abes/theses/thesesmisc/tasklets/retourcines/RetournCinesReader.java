@@ -43,7 +43,7 @@ public class RetournCinesReader implements ItemReader<DocumentProcess>, StepExec
 
     private AtomicInteger iDocument = new AtomicInteger();
 
-    @Value("#{'${thesesToTreat}'.split(',')}")
+    @Value("#{'${thesesToProcess}'.split(',')}")
     private List<Integer> ids;
 
     private List<IdToChange> idToChanges = new ArrayList<>();
