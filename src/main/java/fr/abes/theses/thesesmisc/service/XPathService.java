@@ -385,11 +385,11 @@ public class XPathService {
             try {
                 Node newNode1;
                 Node newNode2;
-                if (node.getName().equals("tef:elementdEntree")) {
+                if ("elementdEntree".equals(node.getName())) {
                     // Cas 1
                     newNode1 = createNewElementWithEntry("tef:elementdEntree", entry.getNewPpn1(), entry.getNewLabel1());
                     newNode2 = createNewElementWithEntry("tef:subdivision", entry.getNewPpn2(), entry.getNewLabel2());
-                } else if (node.getName().equals("tef:subdivision")) {
+                } else if ("subdivision".equals(node.getName())) {
                     // Cas 2
                     newNode1 = createNewElementWithEntry("tef:subdivision", entry.getNewPpn1(), entry.getNewLabel1());
                     newNode2 = createNewElementWithEntry("tef:subdivision", entry.getNewPpn2(), entry.getNewLabel2());
