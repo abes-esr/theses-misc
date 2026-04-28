@@ -216,8 +216,10 @@ public class Tef {
      * et les remplace par les valeurs définies comme "new" dans entry
      * @param entry une ligne du fichier csv listant les sujets rameau à scinder
      */
-    public boolean searchAndReplaceScissionRameau(ScissionRameauEntry entry) {
+    public boolean searchAndReplaceScissionRameau(ScissionRameauEntry entry) throws DocumentException, IOException {
         List<Node> resultNodes = XPathService.getNodesByParentNodeNameAndAttributeValue(documentTef, "autoriteExterne", entry.getOldPpn(), "//tef:vedetteRameauNomCommun");
-        return XPathService.replaceVedettesRameau(resultNodes, entry);
+        boolean isModified= XPathService.replaceVedettesRameau(resultNodes, entry);
+        deleteCariageReturn();
+        return isModified;
     }
 }
