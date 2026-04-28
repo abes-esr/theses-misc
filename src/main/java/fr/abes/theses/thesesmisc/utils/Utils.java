@@ -47,6 +47,16 @@ public class Utils {
         }
     }
 
+    public static String getStarStockPath(String databaseUrl) {
+        if (databaseUrl.contains("-p-")) {
+            return "/applis/portail/theses/STARSTOCK/";
+        } else if (databaseUrl.contains("-t-")) {
+            return "/applis/theses/STARSTOCK/";
+        } else {
+            throw new IllegalStateException("Unexpected value: " + databaseUrl);
+        }
+    }
+
     public static String getXslSolr(String databaseUser) {
         switch (databaseUser) {
             case "STAR":

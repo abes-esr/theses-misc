@@ -1,20 +1,20 @@
 package fr.abes.theses.thesesmisc.service;
 
+import fr.abes.theses.thesesmisc.utils.ScissionRameauEntry;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.*;
 import org.dom4j.tree.BaseElement;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
 public class XPathService {
+
+    public static final String METS_HDR = "/mets:mets/mets:metsHdr";
 
     public static final String STAR_GESTION = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion";
     public static final String STAR_GEST_TRTS_SORTIES_SUDOC = STAR_GESTION + "/traitements/sorties/sudoc";
@@ -41,6 +41,9 @@ public class XPathService {
     public static final String STEP_NNT = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/step_gestion/traitements/sorties/nnt";
     public static final String STEP_DATE_ABANDON = "/mets:mets/mets:amdSec/mets:techMD/mets:mdWrap/mets:xmlData/tef:thesisAdmin/suj:vie/suj:dateAbandon";
     public static final String STEP_SUJ_VIE = "/mets:mets/mets:amdSec/mets:techMD/mets:mdWrap/mets:xmlData/tef:thesisAdmin/suj:vie";
+
+    public static final String STAR_ETAB_DIFFUSEUR = "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements/sorties/diffusion/abesDiffuseur";
+    //                                               "/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements/sorties/diffusion/abesDiffuseur/@abesDiffuseurPolEtablissement
 
 
     public static final List<String> typeBalises = new ArrayList<>(
@@ -307,5 +310,142 @@ public class XPathService {
         XPathService.addElement(STEP_SUJ_VIE, node, documentTef);
 
         return true;
+    }
+
+    public static boolean majAbesDiffuseurOui(String urlAbesDiffuseur, Document documentTef) {
+        XPathService.setAttribut(STAR_ETAB_DIFFUSEUR, "abesDiffuseurPolEtablissement", "oui", documentTef);
+        XPathService.setAttribut(STAR_ETAB_DIFFUSEUR, "urlAbesDiffuseur", urlAbesDiffuseur, documentTef);
+        return true;
+    }
+
+    public static boolean majAbesDiffuseurAjoutUriCasN(String urlAbesDiffuseur, String xpath, Document documentTef) {
+
+        // Récupérer les noeuds correspondant au xpath
+        List<Node> nodes = documentTef.selectNodes(xpath);
+
+        // Vérifier si l'URL existe déjà
+        for (Node node : ((Element) documentTef.selectNodes(xpath).get(0)).elements()) {
+            String urlExistante = node.getText();
+            if (urlAbesDiffuseur.equals(urlExistante)) {
+                // L'URL est déjà présente, on ne l'ajoute pas
+                log.info("Url déjà présente : " + urlAbesDiffuseur);
+                return false;
+            }
+        }
+
+
+        BaseElement node = new BaseElement("dc:identifier");
+        node.addAttribute("xsi:type", "dcterms:URI");
+        node.setText(urlAbesDiffuseur);
+
+        addElement(xpath, node, documentTef);
+
+        return true;
+    }
+
+
+    /**
+     * Récupère tous les sous-nœuds des balises données par le xpath
+     * dont l'attribut attribut a une valeur attributeValue.
+     *
+     * @param documentTef Le tef
+     * @param attributeValue Le nom de l'attribut à rechercher
+     * @param attributeValue La valeur de l'attribut à rechercher
+     * @param xpath Le xpath pour sélectionner les noeuds
+     * @return Une liste de nœuds correspondant aux critères.
+     */
+    public static List<Node> getNodesByParentNodeNameAndAttributeValue(Document documentTef, String attribut, String attributeValue, String xpath) {
+        List<Node> resultNodes = new ArrayList<>();
+
+        XPath xpathVedette = DocumentHelper.createXPath(xpath);
+//        xpathVedette.setNamespaceURIs(Map.of("tef", "http://namespace-uri"));
+
+        List<Node> vedetteNodes = xpathVedette.selectNodes(documentTef);
+
+        // Pour chaque balise, chercher ses sous-nœuds
+        for (Node vedetteNode : vedetteNodes) {
+            if (vedetteNode instanceof Element) {
+                Element vedetteElement = (Element) vedetteNode;
+                XPath xpathSubNodes = DocumentHelper.createXPath(
+                        "./*[@" + attribut + "='" + attributeValue + "']"
+                );
+
+                // Sélectionner les sous-nœuds correspondants
+                List<Node> subNodes = xpathSubNodes.selectNodes(vedetteElement);
+                resultNodes.addAll(subNodes);
+            }
+        }
+
+        return resultNodes;
+    }
+
+    public static boolean replaceVedettesRameau(List<Node> vedetteNodes, ScissionRameauEntry entry) {
+        boolean isModified = false;
+        for (Node node: vedetteNodes) {
+            try {
+                Node newNode1;
+                Node newNode2;
+                if ("elementdEntree".equals(node.getName())) {
+                    // Cas 1
+                    newNode1 = createNewElementWithEntry("tef:elementdEntree", entry.getNewPpn1(), entry.getNewLabel1());
+                    newNode2 = createNewElementWithEntry("tef:subdivision", entry.getNewPpn2(), entry.getNewLabel2());
+                } else if ("subdivision".equals(node.getName())) {
+                    // Cas 2
+                    newNode1 = createNewElementWithEntry("tef:subdivision", entry.getNewPpn1(), entry.getNewLabel1());
+                    newNode2 = createNewElementWithEntry("tef:subdivision", entry.getNewPpn2(), entry.getNewLabel2());
+                } else {
+                    throw new Exception("Pas d'élement <tef:elementdEntree> ou <tef:subdivision> trouvé pour l'autorité rameau " + entry.getOldPpn());
+                }
+
+                replaceNodeWithTwoNewNodes(node, newNode1, newNode2);
+                isModified = true;
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        }
+
+        return isModified;
+    }
+
+    /**
+     * Crée un nouveau noeud de type spécifié avec les valeurs de ScissionRameauEntry.
+     *
+     * @param nodeType Le type du nouveau nœud (ex: "tef:elementdEntree").
+     * @param newPpn La nouvelle valeur PPN.
+     * @param newLabel La nouvelle valeur du libellé.
+     * @return Le nouveau nœud créé.
+     */
+    private static Node createNewElementWithEntry(String nodeType, String newPpn, String newLabel) {
+        Element newElement = DocumentHelper.createElement(nodeType);
+
+        newElement.addAttribute("autoriteExterne", newPpn);
+        newElement.addAttribute("autoriteSource", "Sudoc");
+        newElement.setText(newLabel);
+
+        if ("tef:subdivision".equals(nodeType)) {
+            newElement.addAttribute("type", "subdivisionDeSujet");
+        }
+
+        return newElement;
+    }
+
+    /**
+     * Remplace un nœud par deux nouveaux noeuds au même endroit et au même niveau.
+     * @param nodeToReplace Le noeud à supprimer.
+     * @param newNode1 Le premier nouveau noeud.
+     * @param newNode2 Le deuxième nouveau noeud.
+     */
+    public static void replaceNodeWithTwoNewNodes(Node nodeToReplace, Node newNode1, Node newNode2) {
+        Element parent = nodeToReplace.getParent();
+
+        if (parent == null) {
+            throw new IllegalArgumentException("Le noeud à remplacer n'a pas de parent.");
+        }
+
+        int index = parent.indexOf(nodeToReplace);
+
+        nodeToReplace.detach();
+        parent.content().add(index, newNode1);
+        parent.content().add(index + 1, newNode2);
     }
 }

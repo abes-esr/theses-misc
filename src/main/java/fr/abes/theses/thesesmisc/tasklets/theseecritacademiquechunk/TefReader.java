@@ -45,7 +45,7 @@ public class TefReader implements ItemReader<DocumentProcess>, StepExecutionList
 
     private AtomicInteger iDocument = new AtomicInteger();
 
-    @Value("#{'${thesesToTreat}'.split(',')}")
+    @Value("#{'${thesesToProcess}'.split(',')}")
     private List<Integer> ids;
 
     private List<IdToChange> idToChanges = new ArrayList<>();

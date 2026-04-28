@@ -5,8 +5,13 @@ import fr.abes.theses.thesesmisc.service.impl.DocumentService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 
 @Slf4j
@@ -15,6 +20,14 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
 
     @Getter
     private final DocumentService service;
+
+    @Value("${spring.datasource.username}")
+    private String username;
+    @Value("${spring.datasource.password}")
+    private String password;
+
+    @Value("${spring.datasource.url}")
+    private String datasourceUrl;
 
     public TefWriter(DocumentService service) {
         this.service = service;
@@ -36,6 +49,26 @@ public class TefWriter implements ItemWriter<DocumentProcess> {
                 } else {
                     log.warn("Le document est null, vérifier l'environnement STAR/SUJETS");
                 }
+            }
+
+            try (Connection conn = DriverManager.getConnection(datasourceUrl, username, password)) {
+
+                // Préparation de l'appel de la procédure
+                try (CallableStatement cs = conn.prepareCall("{ call PORTAIL.AJOUTER_DOCUMENT_INDEXATION_SOLR(?, ?, ?) }")) {
+
+                    // Définition des paramètres IN
+                    cs.setInt(1, documentProcess.document.getIdDoc());        // p_iddoc
+                    cs.setString(2, "add");     // p_action
+                    cs.setString(3, username.toLowerCase());    // p_origin
+
+                    // Exécution
+                    cs.execute();
+
+                    System.out.println("Procédure exécutée avec succès !");
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
 
  /*               if (documentProcess.compte != null) {

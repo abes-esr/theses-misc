@@ -2,18 +2,15 @@ package fr.abes.theses.thesesmisc.model;
 
 
 import fr.abes.theses.thesesmisc.service.XPathService;
+import fr.abes.theses.thesesmisc.utils.ScissionRameauEntry;
 import lombok.extern.slf4j.Slf4j;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Node;
+import org.dom4j.*;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -108,8 +105,8 @@ public class Tef {
         } else {
             return false;
         }
-
     }
+
 
     public boolean changeUrlCas5(String url) throws DocumentException, IOException, InstantiationException {
         checkDocumenTef();
@@ -170,5 +167,59 @@ public class Tef {
     public boolean changeIdSourceStep(String odlIdSource, String newIdSource) {
         XPathService.changeIdSourceStep(documentTef, odlIdSource, newIdSource);
         return true;
+    }
+
+    public boolean majAbesDiffuseurOui(String urlAbesDiffuseur) throws Exception {
+
+        String cas = XPathService.getAttribut("/mets:mets/mets:dmdSec/mets:mdWrap/mets:xmlData/star_gestion/traitements", "scenario", documentTef);
+
+        switch (cas) {
+            case "cas1" :
+                String xpath1 = "//mets:dmdSec[ends-with(@ID, 'VERSION_COMPLETE.DESCRIPTION.EDITION_ARCHIVAGE')]//tef:edition";
+                XPathService.majAbesDiffuseurAjoutUriCasN(urlAbesDiffuseur, xpath1, documentTef);
+                break;
+            case "cas2" :
+                String xpath2 = "//mets:dmdSec[ends-with(@ID, 'VERSION_COMPLETE.DESCRIPTION.EDITION_1')]//tef:edition";
+                XPathService.majAbesDiffuseurAjoutUriCasN(urlAbesDiffuseur, xpath2, documentTef);
+                break;
+            case "cas3" :
+                String xpath3 = "//mets:dmdSec[ends-with(@ID, 'VERSION_INCOMPLETE_1.DESCRIPTION.EDITION_1')]//tef:edition";
+                XPathService.majAbesDiffuseurAjoutUriCasN(urlAbesDiffuseur, xpath3, documentTef);
+                break;
+            case "cas4" :
+                String xpath4 = "//mets:dmdSec[ends-with(@ID, 'VERSION_INCOMPLETE_1.DESCRIPTION.EDITION_1')]//tef:edition";
+                XPathService.majAbesDiffuseurAjoutUriCasN(urlAbesDiffuseur, xpath4, documentTef);
+                break;
+            default :
+                throw new Exception("Cas non valide");
+        }
+
+        XPathService.majAbesDiffuseurOui(urlAbesDiffuseur, documentTef);
+        return true;
+    }
+
+    public String getIdInTEF() {
+        String id = XPathService.getAttribut(XPathService.METS_HDR, "ID", documentTef);
+        Pattern pattern = Pattern.compile("_(\\d+)\\.");
+        Matcher matcher = pattern.matcher(id);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            return null;
+        }
+
+    }
+
+    /**
+     * Recherche la liste de tous les sous-noeuds de <vedetteRameauNomCommun> correspondant à entry
+     * et les remplace par les valeurs définies comme "new" dans entry
+     * @param entry une ligne du fichier csv listant les sujets rameau à scinder
+     */
+    public boolean searchAndReplaceScissionRameau(ScissionRameauEntry entry) throws DocumentException, IOException {
+        List<Node> resultNodes = XPathService.getNodesByParentNodeNameAndAttributeValue(documentTef, "autoriteExterne", entry.getOldPpn(), "//tef:vedetteRameauNomCommun");
+        boolean isModified= XPathService.replaceVedettesRameau(resultNodes, entry);
+        deleteCariageReturn();
+        return isModified;
     }
 }

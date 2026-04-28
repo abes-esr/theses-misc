@@ -9,18 +9,22 @@ import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.retry.annotation.EnableRetry;
+import fr.abes.theses.thesesmisc.utils.ScissionRameauList;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.io.IOException;
 
 @Slf4j
 @Configuration
@@ -194,6 +198,31 @@ public class BatchConfiguration {
                 .build();
     }
 
+    @Bean
+    public Job MajAbesDiffuseur(@Qualifier("majAbesDiffuseurReader") ItemReader reader,
+                                @Qualifier("majAbesDiffuseurProcessor") ItemProcessor processor,
+                                @Qualifier("tefWriter") ItemWriter writer) {
+        return jobs.get("majAbesDiffuseur").incrementer(incrementer())
+                .start(genericStep(reader, processor, writer))
+                .build();
+    }
+
+    @Bean
+    public Job CopyProdToTest(@Qualifier("copyProdToTestReader") ItemReader reader,
+                              @Qualifier("copyProdToTestProcessor") ItemProcessor processor,
+                              @Qualifier("tefWriter") ItemWriter writer,
+                              @Qualifier("copyApplisProdToTestTasklet") Tasklet copyApplisProdToTestTasklet) {
+
+        Step copyApplisStep = steps.get("copyApplisProdToTestStep")
+                .tasklet(copyApplisProdToTestTasklet)
+                .build();
+
+        return jobs.get("copyProdToTest").incrementer(incrementer())
+                .start(copyApplisStep)
+                .next(genericStep(reader, processor, writer))
+                .build();
+    }
+
     private Step genericStep(ItemReader reader, ItemProcessor processor, ItemWriter writer) {
         return steps.get("genericStep").chunk(chunkSize)
                 .reader(reader)
@@ -202,4 +231,32 @@ public class BatchConfiguration {
                 .build();
     }
 
+    @Bean
+    public Step loadScissionsStep() {
+        return steps.get("loadScissionsStep")
+                .tasklet((contribution, chunkContext) -> {
+                    try {
+                        ScissionRameauList.loadScissionRameauList();  // Charge les données du CSV
+                        log.info("Chargement de la liste de scissions terminé.");
+                    } catch (IOException e) {
+                        log.error("Erreur lors du chargement de la liste des scissions.", e);
+                        throw new RuntimeException("Erreur lors du chargement de la liste des scissions.", e);
+                    }
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
+    }
+
+    @Bean
+    public Job scinderVedetteRameauJob(
+            @Qualifier("scinderVedetteRameauReader") ItemReader reader,
+            @Qualifier("scinderVedetteRameauProcessor") ItemProcessor processor,
+            @Qualifier("tefWriter") ItemWriter writer) {
+
+        return jobs.get("scinderVedetteRameauJob")
+                .incrementer(incrementer())
+                .start(loadScissionsStep())  // Step de chargement du tableau des scissions
+                .next(genericStep(reader, processor, writer))  // Step de traitement
+                .build();
+    }
 }

@@ -30,6 +30,9 @@ public class DeleteDoublonSolrWriter implements ItemWriter<String> {
     @Value("${spring.datasource.username}")
     private String username;
 
+    @Value("${spring.datasource.url}")
+    private String datasourceUrl;
+
     @Value("${databaseDelete}")
     private Boolean databaseDelete = false;
 
@@ -48,7 +51,7 @@ public class DeleteDoublonSolrWriter implements ItemWriter<String> {
     @Override
     public void write(List<? extends String> list) throws Exception {
 
-        String urlSolr = Utils.getUrlSolr(username);
+        String urlSolr = Utils.getUrlSolr(datasourceUrl, username);
         String urlSolrUpdate = urlSolr + "/update";
 
         for (String id : list) {
