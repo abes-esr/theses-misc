@@ -10,7 +10,6 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -249,12 +248,12 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Job scissionRameauJob(
-            @Qualifier("diviserVedetteRameauReader") ItemReader reader,
-            @Qualifier("diviserVedetteRameauProcessor") ItemProcessor processor,
+    public Job scinderVedetteRameauJob(
+            @Qualifier("scinderVedetteRameauReader") ItemReader reader,
+            @Qualifier("scinderVedetteRameauProcessor") ItemProcessor processor,
             @Qualifier("tefWriter") ItemWriter writer) {
 
-        return jobs.get("scissionRameauJob")
+        return jobs.get("scinderVedetteRameauJob")
                 .incrementer(incrementer())
                 .start(loadScissionsStep())  // Step de chargement du tableau des scissions
                 .next(genericStep(reader, processor, writer))  // Step de traitement

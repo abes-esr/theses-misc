@@ -1,4 +1,4 @@
-package fr.abes.theses.thesesmisc.tasklets.diviserVedetteRameau;
+package fr.abes.theses.thesesmisc.tasklets.scinderVedetteRameau;
 
 import fr.abes.theses.thesesmisc.entities.Document;
 import fr.abes.theses.thesesmisc.model.DocumentProcess;
@@ -12,18 +12,16 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
-public class DiviserVedetteRameauReader implements ItemReader<DocumentProcess> {
+public class ScinderVedetteRameauReader implements ItemReader<DocumentProcess> {
 
     @Getter
     private final DocumentService service;
@@ -36,7 +34,7 @@ public class DiviserVedetteRameauReader implements ItemReader<DocumentProcess> {
     private AtomicInteger iPage = new AtomicInteger();
 
     private AtomicInteger iDocument = new AtomicInteger();
-    public DiviserVedetteRameauReader(DocumentService service) {
+    public ScinderVedetteRameauReader(DocumentService service) {
         this.service = service;
     }
 

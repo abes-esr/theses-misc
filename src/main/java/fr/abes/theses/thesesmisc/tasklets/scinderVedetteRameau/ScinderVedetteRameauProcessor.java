@@ -1,4 +1,4 @@
-package fr.abes.theses.thesesmisc.tasklets.diviserVedetteRameau;
+package fr.abes.theses.thesesmisc.tasklets.scinderVedetteRameau;
 
 import fr.abes.theses.thesesmisc.model.DocumentProcess;
 import fr.abes.theses.thesesmisc.model.Tef;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class DiviserVedetteRameauProcessor implements ItemProcessor<DocumentProcess, DocumentProcess> {
+public class ScinderVedetteRameauProcessor implements ItemProcessor<DocumentProcess, DocumentProcess> {
     @Override
     public DocumentProcess process(DocumentProcess documentProcess) throws Exception {
         // Récupérer la liste des scissions rameau
