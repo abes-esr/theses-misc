@@ -3,6 +3,7 @@ package fr.abes.theses.thesesmisc.tasklets.scinderVedetteRameau;
 import fr.abes.theses.thesesmisc.entities.Document;
 import fr.abes.theses.thesesmisc.model.DocumentProcess;
 import fr.abes.theses.thesesmisc.service.impl.DocumentService;
+import fr.abes.theses.thesesmisc.utils.ScissionRameauList;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.annotation.AfterChunk;
@@ -25,6 +26,7 @@ public class ScinderVedetteRameauReader implements ItemReader<DocumentProcess> {
 
     @Getter
     private final DocumentService service;
+    private List<Integer> scissionRameauTefIds = ScissionRameauList.getTefIds();
 
     private List<Document> documents = new ArrayList<>();
 
@@ -41,7 +43,8 @@ public class ScinderVedetteRameauReader implements ItemReader<DocumentProcess> {
     @BeforeChunk
     public void beforeChunk(ChunkContext context) {
         PageRequest pageable = PageRequest.of(iPage.getAndIncrement(), chunkSize, Sort.by("idDoc").descending());
-        Page<Document> documentPage = service.getDao().getDocument().findAll(pageable);
+
+        Page<Document> documentPage = service.getDao().getDocument().findAllByIdDocIn(scissionRameauTefIds, pageable);
         log.info("Reader : Page " + (iPage.get() - 1) + " / " + documentPage.getTotalPages());
         documents = documentPage.getContent();
     }

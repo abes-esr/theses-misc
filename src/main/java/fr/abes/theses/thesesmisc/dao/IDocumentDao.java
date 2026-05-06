@@ -18,6 +18,8 @@ public interface IDocumentDao extends JpaRepository<Document, Integer> {
         @Query(value = "select d from Document d where d.codeEtab = ?1 order by d.idDoc desc")
         Page<Document> findAllByCodeEtab(String codeEtab, Pageable pageable);
 
+        Page<Document> findAllByIdDocIn(List<Integer> ids, Pageable pageable);
+
 
 
         boolean existsById (Integer idDoc);

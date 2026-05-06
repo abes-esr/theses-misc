@@ -242,6 +242,14 @@ public class BatchConfiguration {
                         log.error("Erreur lors du chargement de la liste des scissions.", e);
                         throw new RuntimeException("Erreur lors du chargement de la liste des scissions.", e);
                     }
+
+                    try {
+                        ScissionRameauList.loadScissionRameauTefIdList();  // Charge les données du CSV
+                        log.info("Chargement de la liste des ID des TEF à traiter terminé.");
+                    } catch (IOException e) {
+                        log.error("Erreur lors du chargement de la liste des ID TEF.", e);
+                        throw new RuntimeException("Erreur lors du chargement de la liste des ID TEF.", e);
+                    }
                     return RepeatStatus.FINISHED;
                 })
                 .build();
