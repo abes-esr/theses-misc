@@ -24,7 +24,7 @@ public class ScinderVedetteRameauProcessor implements ItemProcessor<DocumentProc
         Tef documentTef = new Tef(documentProcess.document.getDoc());
         try {
             for (ScissionRameauEntry entry : scissionRameauEntries) {
-                documentProcess.edited = documentProcess.edited || documentTef.searchAndReplaceScissionRameau(entry); // edited reste à true meme si les prochaines entrées n'apparaissent pas dans le tef
+                documentProcess.edited = documentTef.searchAndReplaceScissionRameau(entry) || documentProcess.edited; // edited reste à true meme si les prochaines entrées n'apparaissent pas dans le tef
             }
         } catch (Exception e) {
             log.info("Error in SubdivisionDeFormeProcessor, doc : " + documentProcess.document.getIdDoc());

@@ -1,6 +1,7 @@
 package fr.abes.theses.thesesmisc;
 
 import fr.abes.theses.thesesmisc.configuration.ThesesOracleConfig;
+import fr.abes.theses.thesesmisc.tasklets.scinderVedetteRameau.ScinderVedetteRameauCompositeItemWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersIncrementer;
@@ -259,7 +260,7 @@ public class BatchConfiguration {
     public Job scinderVedetteRameauJob(
             @Qualifier("scinderVedetteRameauReader") ItemReader reader,
             @Qualifier("scinderVedetteRameauProcessor") ItemProcessor processor,
-            @Qualifier("tefWriter") ItemWriter writer) {
+            ScinderVedetteRameauCompositeItemWriter writer) {
 
         return jobs.get("scinderVedetteRameauJob")
                 .incrementer(incrementer())
