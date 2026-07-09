@@ -24,6 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class ScinderVedetteRameauReader implements ItemReader<DocumentProcess> {
 
+    private static final int ORACLE_IN_LIMIT = 1000;
+
     @Getter
     private final DocumentService service;
     private List<Integer> scissionRameauTefIds = ScissionRameauList.getTefIds();
@@ -42,11 +44,30 @@ public class ScinderVedetteRameauReader implements ItemReader<DocumentProcess> {
 
     @BeforeChunk
     public void beforeChunk(ChunkContext context) {
-        PageRequest pageable = PageRequest.of(iPage.getAndIncrement(), chunkSize, Sort.by("idDoc").descending());
+        int effectiveChunkSize = Math.min(chunkSize, ORACLE_IN_LIMIT);
+        int startIndex = iPage.getAndIncrement() * effectiveChunkSize;
 
-        Page<Document> documentPage = service.getDao().getDocument().findAllByIdDocIn(scissionRameauTefIds, pageable);
-        log.info("Reader : Page " + (iPage.get() - 1) + " / " + documentPage.getTotalPages());
-        documents = documentPage.getContent();
+        if (startIndex >= scissionRameauTefIds.size()) {
+            documents = new ArrayList<>();
+            return;
+        }
+
+        int endIndex = Math.min(startIndex + effectiveChunkSize, scissionRameauTefIds.size());
+        List<Integer> tefIdsChunk = scissionRameauTefIds.subList(startIndex, endIndex);
+
+        PageRequest pageable = PageRequest.of(0, effectiveChunkSize, Sort.by("idDoc").descending());
+
+        documents = service.getDao().getDocument()
+                .findAllByIdDocIn(tefIdsChunk, pageable)
+                .getContent();
+
+        log.info(
+                "Reader : IDs {} à {} / {}, documents trouvés : {}",
+                startIndex + 1,
+                endIndex,
+                scissionRameauTefIds.size(),
+                documents.size()
+        );
     }
 
     @Override
