@@ -13,6 +13,7 @@ public class ScissionRameauList {
     private static final List<ScissionRameauEntry> scissionRameauList = new ArrayList<>();
     private static final List<Integer> scissionRameauTefIdList = new ArrayList<>();
 
+
     public static void loadScissionRameauList() throws IOException {
         Reader in;
         try {
@@ -20,33 +21,46 @@ public class ScissionRameauList {
         } catch (Exception e) {
             in = new FileReader("autorites_rameau_td_scission_liste.csv");
         }
-        final Iterable<CSVRecord> records = CSVFormat.DEFAULT.withDelimiter('\t').withFirstRecordAsHeader().parse(in);
+
+        final Iterable<CSVRecord> records = CSVFormat.DEFAULT
+                .withDelimiter('\t')
+                .withFirstRecordAsHeader()
+                .parse(in);
+
         for (final CSVRecord record : records) {
             try {
-            String oldPpn = getRequiredValue(record, "PPN A REMPLACER");
-            String newPpn1 = getRequiredValue(record, "PPN 1 DE REMPLACEMENT");
-            String newLabel1 = getRequiredValue(record, "LIBELLE PPN 1 DE  REMPLACEMENT");
-            String newPpn2 = getRequiredValue(record, "PPN 2 DE REMPLACEMENT");
-            String newLabel2 = getRequiredValue(record, "LIBELLE PPN 2 DE  REMPLACEMENT");
+                // Récupération des valeurs
+                String oldPpn = record.get("PPN A REMPLACER");
+                String oldLabel = record.get("LIBELLE PPN A REMPLACER");
+                String newPpn1 = record.get("PPN 1 DE REMPLACEMENT");
+                String newLabel1 = record.get("LIBELLE PPN 1 DE  REMPLACEMENT");
+                String newPpn2 = record.get("PPN 2 DE REMPLACEMENT");
+                String newLabel2 = record.get("LIBELLE PPN 2 DE  REMPLACEMENT");
 
-            scissionRameauList.add(new ScissionRameauEntry(oldPpn, newPpn1, newLabel1, newPpn2, newLabel2));
+                // Vérification des champs obligatoires
+                if (oldPpn == null || oldPpn.trim().isEmpty() ||
+                        oldLabel == null || oldLabel.trim().isEmpty() ||
+                        newPpn1 == null || newPpn1.trim().isEmpty() ||
+                        newLabel1 == null || newLabel1.trim().isEmpty() ||
+                        newPpn2 == null || newPpn2.trim().isEmpty() ||
+                        newLabel2 == null || newLabel2.trim().isEmpty()) {
+                    log.error("Ligne ignorée (champ manquant) : " + record.toString());
+                    continue;
+                }
+
+                // Vérification de la longueur des PPN (9 caractères)
+                if (oldPpn.length() != 9 || newPpn1.length() != 9 || newPpn2.length() != 9) {
+                    log.error("Ligne ignorée (PPN invalide) : PPN doit faire 9 caractères. Ligne : " + record.toString());
+                    continue;
+                }
+
+                // Si tout est valide, on ajoute à la liste
+                scissionRameauList.add(new ScissionRameauEntry(oldPpn, newPpn1, newLabel1, newPpn2, newLabel2));
+
             } catch (Exception e) {
-                log.error(e.getMessage());
+                log.error("Erreur lors du traitement de la ligne : " + e.getMessage());
             }
         }
-    }
-
-    private static String getRequiredValue(CSVRecord record, String columnName) {
-        String value = record.get(columnName);
-        if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Colonne vide dans le fichier de scission RAMEAU à la ligne "
-                            + record.getRecordNumber()
-                            + " : "
-                            + columnName
-            );
-        }
-        return value;
     }
 
     public static void loadScissionRameauTefIdList() throws IOException {
