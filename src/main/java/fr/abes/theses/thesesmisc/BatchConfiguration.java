@@ -86,25 +86,25 @@ public class BatchConfiguration {
 
         return jobs
                 .get("deleteSubdivision").incrementer(incrementer())
-                .start(genericStep(reader, processor,writer))
+                .start(genericStep(reader, processor, writer))
                 .build();
     }
 
     @Bean
-    public Job deleteSubdivisionDeFormeJob (@Qualifier("tefReader") ItemReader reader, @Qualifier("subdivisionDeFormeProcessor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer){
+    public Job deleteSubdivisionDeFormeJob(@Qualifier("tefReader") ItemReader reader, @Qualifier("subdivisionDeFormeProcessor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer) {
         log.info("Début du job de suppression des Subdivision De Forme");
 
         return jobs
                 .get("deleteSubdivisionDeForme").incrementer(incrementer())
-                .start(genericStep(reader, processor,writer))
+                .start(genericStep(reader, processor, writer))
                 .build();
     }
 
     @Bean
-    public Job changeContentIdJob(@Qualifier("tefReader") ItemReader reader, @Qualifier("changeContentIdProcessor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer){
+    public Job changeContentIdJob(@Qualifier("tefReader") ItemReader reader, @Qualifier("changeContentIdProcessor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer) {
         return jobs
                 .get("changeContentId").incrementer(incrementer())
-                .start(genericStep(reader, processor,writer))
+                .start(genericStep(reader, processor, writer))
                 .build();
     }
 
@@ -114,7 +114,7 @@ public class BatchConfiguration {
                                   @Qualifier("deleteDoublonSolrWriter") ItemWriter writer) {
         return jobs
                 .get("deleteSolrIndex").incrementer(incrementer())
-                .start(genericStep(reader, processor,writer))
+                .start(genericStep(reader, processor, writer))
                 .build();
     }
 
@@ -122,25 +122,27 @@ public class BatchConfiguration {
     public Job deleteHistEtCritiqueJob(@Qualifier("histoireEtCritiqueReader") ItemReader reader, @Qualifier("histoireEtCritiqueProcessor") ItemProcessor processor, @Qualifier("tefWriter") ItemWriter writer) {
         return jobs
                 .get("deleteHistEtCritique").incrementer(incrementer())
-                .start(genericStep(reader, processor,writer))
+                .start(genericStep(reader, processor, writer))
                 .build();
     }
+
     @Bean
     public Job deleteWhiteSpaceIdSourceStepJob(@Qualifier("deleteWhiteSpacesBddReader") ItemReader reader,
                                                @Qualifier("deleteWhiteSpacesBddProcessor") ItemProcessor processor,
                                                @Qualifier("tefWriter") ItemWriter writer) {
         return jobs
                 .get("deleteWhiteSpaceIdSourceStep").incrementer(incrementer())
-                .start(genericStep(reader, processor,writer))
+                .start(genericStep(reader, processor, writer))
                 .build();
     }
+
     @Bean
     public Job retourCinesSTARJob(@Qualifier("retournCinesReader") ItemReader reader,
-                                               @Qualifier("retournCinesProcessor") ItemProcessor processor,
-                                               @Qualifier("tefWriter") ItemWriter writer) {
+                                  @Qualifier("retournCinesProcessor") ItemProcessor processor,
+                                  @Qualifier("tefWriter") ItemWriter writer) {
         return jobs
                 .get("retourCinesSTARJob").incrementer(incrementer())
-                .start(genericStep(reader, processor,writer))
+                .start(genericStep(reader, processor, writer))
                 .build();
     }
 
@@ -150,14 +152,14 @@ public class BatchConfiguration {
                               @Qualifier("changeIdSourceWritter") ItemWriter writer) {
         return jobs
                 .get("changeIdSource").incrementer(incrementer())
-                .start(genericStep(reader, processor,writer))
+                .start(genericStep(reader, processor, writer))
                 .build();
     }
 
     @Bean
     public Job searchAndReplace(@Qualifier("searchAndReplaceReader") ItemReader reader,
-                            @Qualifier("searchAndReplaceProcessor") ItemProcessor processor,
-                            @Qualifier("tefWriter") ItemWriter writer) {
+                                @Qualifier("searchAndReplaceProcessor") ItemProcessor processor,
+                                @Qualifier("tefWriter") ItemWriter writer) {
         return jobs.get("searchAndReplace").incrementer(incrementer())
                 .start(genericStep(reader, processor, writer))
                 .build();
@@ -183,8 +185,8 @@ public class BatchConfiguration {
 
     @Bean
     public Job fileLogSyncBddToSolr(@Qualifier("fileLogSyncBddToSolrReader") ItemReader reader,
-                            @Qualifier("syncBddToSolrProcessor") ItemProcessor processor,
-                            @Qualifier("syncBddToSolrWriter") ItemWriter writer) {
+                                    @Qualifier("syncBddToSolrProcessor") ItemProcessor processor,
+                                    @Qualifier("syncBddToSolrWriter") ItemWriter writer) {
         return jobs.get("fileLogSyncBddToSolr").incrementer(incrementer())
                 .start(genericStep(reader, processor, writer))
                 .build();
@@ -192,8 +194,8 @@ public class BatchConfiguration {
 
     @Bean
     public Job SyncBddToSolr(@Qualifier("syncBddToSolrReader") ItemReader reader,
-                            @Qualifier("syncBddToSolrProcessor") ItemProcessor processor,
-                            @Qualifier("syncBddToSolrWriter") ItemWriter writer) {
+                             @Qualifier("syncBddToSolrProcessor") ItemProcessor processor,
+                             @Qualifier("syncBddToSolrWriter") ItemWriter writer) {
         return jobs.get("syncBddToSolr").incrementer(incrementer())
                 .start(genericStep(reader, processor, writer))
                 .build();
@@ -239,6 +241,9 @@ public class BatchConfiguration {
                     try {
                         ScissionRameauList.loadScissionRameauList();  // Charge les données du CSV
                         log.info("Chargement de la liste de scissions terminé.");
+                        if (ScissionRameauList.getEntries().isEmpty()) {
+                            throw new IllegalStateException("La liste des entrées de scission Rameau est vide. Impossible de continuer le traitement.");
+                        }
                     } catch (IOException e) {
                         log.error("Erreur lors du chargement de la liste des scissions.", e);
                         throw new RuntimeException("Erreur lors du chargement de la liste des scissions.", e);
@@ -247,6 +252,9 @@ public class BatchConfiguration {
                     try {
                         ScissionRameauList.loadScissionRameauTefIdList();  // Charge les données du CSV
                         log.info("Chargement de la liste des ID des TEF à traiter terminé.");
+                        if (ScissionRameauList.getTefIds().isEmpty()) {
+                            throw new IllegalStateException("La liste des ID TEF est vide. Impossible de continuer le traitement.");
+                        }
                     } catch (IOException e) {
                         log.error("Erreur lors du chargement de la liste des ID TEF.", e);
                         throw new RuntimeException("Erreur lors du chargement de la liste des ID TEF.", e);

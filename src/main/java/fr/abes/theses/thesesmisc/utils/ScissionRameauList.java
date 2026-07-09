@@ -70,9 +70,37 @@ public class ScissionRameauList {
         } catch (Exception e) {
             in = new FileReader("autorites_rameau_td_scission_liste_tef_id.csv");
         }
-        final Iterable<CSVRecord> records = CSVFormat.DEFAULT.withDelimiter('\t').withFirstRecordAsHeader().parse(in);
+
+        final Iterable<CSVRecord> records = CSVFormat.DEFAULT
+                .withDelimiter('\t')
+                .withFirstRecordAsHeader()
+                .parse(in);
+
         for (final CSVRecord record : records) {
-            scissionRameauTefIdList.add(Integer.valueOf(record.get("TEF ID")));
+            try {
+                String tefIdStr = record.get("TEF ID");
+
+                // Vérification que la colonne existe et n'est pas vide
+                if (tefIdStr == null || tefIdStr.trim().isEmpty()) {
+                    log.error("Ligne ignorée : TEF ID est vide ou manquant. Ligne : " + record.toString());
+                    continue;
+                }
+
+                // Vérification du format entier
+                int tefId;
+                try {
+                    tefId = Integer.parseInt(tefIdStr.trim());
+                } catch (NumberFormatException e) {
+                    log.error("Ligne ignorée : TEF ID n'est pas un entier valide. Valeur : " + tefIdStr);
+                    continue;
+                }
+
+                // Ajout à la liste si tout est valide
+                scissionRameauTefIdList.add(tefId);
+
+            } catch (Exception e) {
+                log.error("Erreur inattendue lors du traitement de la ligne : " + e.getMessage());
+            }
         }
     }
 
